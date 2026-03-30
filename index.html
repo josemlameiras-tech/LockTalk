@@ -598,10 +598,6 @@ window.searchMessages=async function(q){
 };
 
 // AUTH
-getRedirectResult(auth).then(result=>{
-  if(result&&result.user){console.log('Redirect login ok');}
-}).catch(e=>console.error('Redirect error:',e));
-
 onAuthStateChanged(auth,async user=>{
   if(user){
     myUid=user.uid;myEmail=user.email;myGooglePhoto=user.photoURL;
