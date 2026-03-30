@@ -223,10 +223,17 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-seri
   </div>
   <div class="tabs">
     <div class="tab active" onclick="switchTab('chats')">💬 Chats</div>
-    <div class="tab" onclick="switchTab('contacts')">👥 Contactos</div>
+    <div class="tab" onclick="switchTab('groups')">👥 Grupos</div>
+    <div class="tab" onclick="switchTab('contacts')">🔍 Contactos</div>
   </div>
   <div id="tab-chats" class="tab-content active">
     <div id="chats-list" class="list-area"><div class="list-empty"><span class="list-empty-icon">💬</span>Sem conversas.<br>Adiciona um contacto!</div></div>
+  </div>
+  <div id="tab-groups" class="tab-content">
+    <div style="padding:10px 16px;border-bottom:1px solid var(--border);display:flex;gap:8px;background:var(--bg2);flex-shrink:0">
+      <button onclick="showModal('create-group-modal')" style="flex:1;padding:10px;background:var(--green);color:white;border:none;border-radius:10px;font-size:14px;cursor:pointer;font-weight:500">+ Criar grupo</button>
+    </div>
+    <div id="groups-list" class="list-area"><div class="list-empty"><span class="list-empty-icon">👥</span>Sem grupos.<br>Cria um novo grupo!</div></div>
   </div>
   <div id="tab-contacts" class="tab-content">
     <div class="add-bar">
@@ -249,7 +256,18 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-seri
     <button class="hbtn" onclick="toggleThemeBar()">🎨</button><button class="hbtn" onclick="showModal('delete-modal')">🗑️</button>
   </div>
   <div id="theme-bar" style="display:none;padding:10px 14px;border-bottom:1px solid var(--border);gap:8px;align-items:center;background:var(--bg2);flex-shrink:0;overflow-x:auto"><span style="font-size:12px;color:var(--text2);flex-shrink:0">Tema:</span><div style="width:26px;height:26px;border-radius:50%;background:#1D9E75;cursor:pointer;border:2px solid white;flex-shrink:0" onclick="setTheme('#1D9E75','#0d1117','#21262d')"></div><div style="width:26px;height:26px;border-radius:50%;background:#3498db;cursor:pointer;flex-shrink:0" onclick="setTheme('#3498db','#0a1628','#1a2744')"></div><div style="width:26px;height:26px;border-radius:50%;background:#9b59b6;cursor:pointer;flex-shrink:0" onclick="setTheme('#9b59b6','#1a0d2e','#2d1b4e')"></div><div style="width:26px;height:26px;border-radius:50%;background:#e74c3c;cursor:pointer;flex-shrink:0" onclick="setTheme('#e74c3c','#2e0d0d','#4e1a1a')"></div><div style="width:26px;height:26px;border-radius:50%;background:#f39c12;cursor:pointer;flex-shrink:0" onclick="setTheme('#f39c12','#2e1f0d','#4e351a')"></div><div style="width:26px;height:26px;border-radius:50%;background:#e91e8c;cursor:pointer;flex-shrink:0" onclick="setTheme('#e91e8c','#2e0d1e','#4e1a35')"></div></div>
+  <div id="pinned-bar" style="display:none;padding:8px 14px;border-bottom:1px solid var(--border);background:var(--bg2);flex-shrink:0;cursor:pointer" onclick="scrollToPinned()">
+    <div style="display:flex;align-items:center;gap:8px">
+      <span style="font-size:14px">📌</span>
+      <div style="flex:1;min-width:0">
+        <div style="font-size:11px;color:var(--green);font-weight:600">Mensagem fixada</div>
+        <div id="pinned-text" style="font-size:13px;color:var(--text2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis"></div>
+      </div>
+      <button onclick="event.stopPropagation();unpinMessage()" style="background:none;border:none;cursor:pointer;color:var(--text3);font-size:16px">✕</button>
+    </div>
+  </div>
   <div id="messages"></div>
+  <div id="ai-mode-bar" style="display:none;padding:6px 14px;background:linear-gradient(90deg,#1a0d2e,#2d1b4e);flex-shrink:0;font-size:12px;color:#b898d8;text-align:center">🤖 Modo IA ativo — Claude responde automaticamente</div>
   <div class="typing-row" id="typing-row"></div>
   <div id="emoji-picker-main"></div>
   <div id="input-area">
@@ -257,6 +275,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-seri
     <input type="file" id="img-input" accept="image/*" style="display:none" onchange="sendImage(this)"/>
     <button class="iab" onclick="toggleEmoji()">😊</button>
     <button class="iab" onclick="showModal('secret-msg-modal')" title="Mensagem secreta">🔐</button>
+    <button class="iab" onclick="showGifPicker()" title="GIF">GIF</button>
+    <button class="iab" onclick="shareLocation()" title="Localização">📍</button>
     <button class="iab" id="voice-btn" onmousedown="startRec()" onmouseup="stopRec()" ontouchstart="startRec(event)" ontouchend="stopRec(event)">🎤</button>
     <textarea id="msg-input" placeholder="Mensagem..." rows="1"></textarea>
     <button id="send-btn" onclick="sendMsg()"><svg viewBox="0 0 24 24"><path d="M2 21l21-9L2 3v7l15 2-15 2v7z"/></svg></button>
@@ -375,6 +395,48 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-seri
     <input type="file" id="story-img-input" accept="image/*" style="display:none" onchange="storyImgSelected(this)"/>
     <p id="story-img-name" style="font-size:12px;color:var(--green);margin-bottom:10px"></p>
     <div class="mbtns"><button class="btn-c" onclick="hideModal('add-story-modal')">Cancelar</button><button class="btn-ok" onclick="publishStory()">Publicar</button></div>
+  </div>
+</div>
+
+<!-- CREATE GROUP -->
+<div class="modal-overlay" id="create-group-modal">
+  <div class="modal">
+    <h3>👥 Criar grupo</h3>
+    <input id="group-name-input" placeholder="Nome do grupo..." maxlength="30"/>
+    <p style="font-size:13px;color:var(--text2);margin-bottom:8px">Adicionar contactos:</p>
+    <div id="group-contacts-list" style="max-height:180px;overflow-y:auto;margin-bottom:10px;border:1px solid var(--border);border-radius:10px;padding:4px"></div>
+    <div class="mbtns">
+      <button class="btn-c" onclick="hideModal('create-group-modal')">Cancelar</button>
+      <button class="btn-ok" onclick="createGroup()">Criar</button>
+    </div>
+  </div>
+</div>
+
+<!-- POLL -->
+<div class="modal-overlay" id="poll-modal">
+  <div class="modal">
+    <h3>📊 Criar enquete</h3>
+    <input id="poll-question" placeholder="Pergunta..." maxlength="100"/>
+    <input id="poll-opt1" placeholder="Opção 1..." maxlength="50"/>
+    <input id="poll-opt2" placeholder="Opção 2..." maxlength="50"/>
+    <input id="poll-opt3" placeholder="Opção 3 (opcional)..." maxlength="50"/>
+    <input id="poll-opt4" placeholder="Opção 4 (opcional)..." maxlength="50"/>
+    <div class="mbtns">
+      <button class="btn-c" onclick="hideModal('poll-modal')">Cancelar</button>
+      <button class="btn-ok" onclick="sendPoll()">Enviar</button>
+    </div>
+  </div>
+</div>
+
+<!-- GIF PICKER -->
+<div class="modal-overlay" id="gif-modal">
+  <div class="modal">
+    <h3>GIF / Sticker</h3>
+    <input id="gif-search" placeholder="Pesquisar GIF..." oninput="searchGifs(this.value)" style="width:100%;padding:10px 14px;border-radius:10px;border:1px solid var(--border);background:var(--surface3);color:var(--text);font-size:14px;outline:none;margin-bottom:10px;font-family:inherit"/>
+    <div id="gif-results" style="display:grid;grid-template-columns:1fr 1fr;gap:8px;max-height:250px;overflow-y:auto">
+      <div style="text-align:center;padding:20px;color:var(--text2);font-size:13px;grid-column:1/-1">Pesquisa um GIF acima</div>
+    </div>
+    <div class="mbtns" style="margin-top:10px"><button class="btn-c" onclick="hideModal('gif-modal')">Fechar</button></div>
   </div>
 </div>
 <div class="modal-overlay" id="delete-modal">
@@ -504,7 +566,7 @@ async function enterApp(){
   $('p-email-display').textContent=myEmail||'';
   $('p-username-field').textContent='@'+myUsername;
   showScreen('screen-main');
-  listenContacts();listenChats();loadStories();listenCalls();
+  listenContacts();listenChats();loadStories();listenCalls();loadGroups();
 }
 
 function listenContacts(){onValue(ref(db,'contacts/'+myUid),snap=>renderContacts(snap.val()));}
@@ -584,7 +646,7 @@ function renderAv(avatar,name,size=44,online=false){
 }
 
 window.switchTab=function(t){
-  document.querySelectorAll('.tab').forEach((tab,i)=>tab.classList.toggle('active',(i===0&&t==='chats')||(i===1&&t==='contacts')));
+  document.querySelectorAll('.tab').forEach((tab,i)=>tab.classList.toggle('active',(i===0&&t==='chats')||(i===1&&t==='groups')||(i===2&&t==='contacts')));
   document.querySelectorAll('.tab-content').forEach(tc=>tc.classList.remove('active'));
   $('tab-'+t).classList.add('active');
 };
@@ -594,7 +656,9 @@ function openChat(peer){
   $('chat-peer-name').textContent='@'+peer.username;
   $('chat-peer-sub').textContent=peer.online?'🟢 online':'⚪ offline';
   const w=$('chat-peer-av-wrap');w.innerHTML='';w.appendChild(renderAv(peer.avatar,peer.username,36,peer.online));
-  $('messages').innerHTML='';showScreen('screen-chat');
+  $('messages').innerHTML='';
+  $('ai-mode-bar').style.display='none';aiMode=false;
+  showScreen('screen-chat');
   const chatId=cid(myUid,peer.id);
   if(msgListener)msgListener();
   msgListener=onValue(ref(db,'messages/'+chatId),snap=>{
@@ -629,6 +693,10 @@ function addBubble(m,chatId){
   const actBtns=isText?`<div style="display:flex;gap:4px;margin-top:3px"><button class="ma-btn" onclick="(async function(btn){btn.textContent='⏳';const bubble=btn.closest('.msg').querySelector('.bubble');const t=bubble?.childNodes[0]?.textContent?.trim();if(!t)return;const tr=await translateText(t);btn.textContent='🌐';if(tr&&tr!==t){let el=bubble.querySelector('.tr');if(!el){el=document.createElement('div');el.className='tr';el.style='font-size:12px;color:var(--text2);margin-top:4px;font-style:italic';bubble.appendChild(el);}el.textContent='🌐 '+tr;toast('Traduzido!');}else toast('Sem tradução');})(this)">🌐</button><button class="ma-btn" onclick="startForward('${(m.text||'').replace(/'/g,'&apos;')}')">↪️</button></div>`:'';
   div.innerHTML=`${content}${rxns}<div class="msg-meta">${gt(m.ts)}${tick}</div>${actBtns}`;
   div.querySelector('.bubble')?.addEventListener('dblclick',()=>showRxnPicker(div,m.fbKey,chatId));
+  if(m.type==='text'&&isMe){
+    div.querySelector('.bubble')?.addEventListener('contextmenu',e=>{e.preventDefault();pinMessage(m.fbKey,m.text,chatId);});
+  }
+  div.id='msg-'+(m.fbKey||'');
   $('messages').appendChild(div);$('messages').scrollTop=99999;
 }
 
@@ -697,10 +765,16 @@ window.stopRec=function(e){
 window.sendMsg=async function(){
   const text=$('msg-input').value.trim();if(!text||!currentPeer)return;
   $('msg-input').value='';$('msg-input').style.height='auto';
-  const chatId=cid(myUid,currentPeer.id);
-  const dr=await push(ref(db,'messages/'+chatId),{from:myUid,type:'text',text,ts:Date.now()});
+  const chatId=currentPeer.isGroup?'group_'+currentPeer.group.id:cid(myUid,currentPeer.id);
+  const dr=await push(ref(db,'messages/'+chatId),{from:myUid,fromName:myUsername,type:'text',text,ts:Date.now()});
   await update(dr,{fbKey:dr.key});
-  set(ref(db,'typing/'+chatId+'/'+myUid),false);
+  if(!currentPeer.isGroup)set(ref(db,'typing/'+chatId+'/'+myUid),false);
+  if(aiMode&&!currentPeer.isGroup){
+    $('typing-row').textContent='🤖 Claude está a escrever...';
+    const reply=await callClaude(text);
+    $('typing-row').textContent='';
+    await push(ref(db,'messages/'+chatId),{from:'ai_claude',fromName:'🤖 Claude',type:'text',text:reply,ts:Date.now()+100});
+  }
 };
 
 function handleTyping(){
@@ -934,6 +1008,173 @@ window.toggleCam=function(){camOff=!camOff;if(localStream)localStream.getVideoTr
 function startCallTimer(){callSecs=0;callTimerInt=setInterval(()=>{callSecs++;const m=Math.floor(callSecs/60),s=callSecs%60;$('call-timer-txt').textContent=m+':'+(s<10?'0':'')+s;},1000);}
 
 // Patch enterApp to load stories and listen calls
+
+// PINNED MESSAGES
+let pinnedMsg=null;
+window.pinMessage=async function(fbKey,text,chatId){
+  if(!currentPeer)return;
+  await set(ref(db,'pinned/'+cid(myUid,currentPeer.id)),{fbKey,text,ts:Date.now()});
+  toast('📌 Mensagem fixada!');
+};
+window.unpinMessage=async function(){
+  if(!currentPeer)return;
+  await remove(ref(db,'pinned/'+cid(myUid,currentPeer.id)));
+  $('pinned-bar').style.display='none';
+};
+window.scrollToPinned=function(){
+  if(!pinnedMsg)return;
+  const el=document.getElementById('msg-'+pinnedMsg.fbKey);
+  if(el)el.scrollIntoView({behavior:'smooth',block:'center'});
+};
+function loadPinned(chatId){
+  onValue(ref(db,'pinned/'+chatId),snap=>{
+    pinnedMsg=snap.val();
+    if(pinnedMsg){$('pinned-bar').style.display='block';$('pinned-text').textContent=pinnedMsg.text||'';}
+    else $('pinned-bar').style.display='none';
+  });
+}
+
+// GROUPS
+window.showCreateGroupModal=function(){
+  const list=$('group-contacts-list');list.innerHTML='';
+  onValue(ref(db,'contacts/'+myUid),snap=>{
+    Object.entries(snap.val()||{}).forEach(([uid,c])=>{
+      const row=document.createElement('div');
+      row.style.cssText='display:flex;align-items:center;gap:10px;padding:8px;border-radius:8px';
+      row.innerHTML='<input type="checkbox" value="'+uid+'" id="gc-'+uid+'" style="width:16px;height:16px;accent-color:var(--green)"/><label for="gc-'+uid+'" style="cursor:pointer;font-size:14px;color:var(--text)">@'+c.username+'</label>';
+      list.appendChild(row);
+    });
+  },{onlyOnce:true});
+  showModal('create-group-modal');
+};
+window.createGroup=async function(){
+  const name=$('group-name-input').value.trim();
+  if(!name){toast('Introduz um nome para o grupo');return;}
+  const checked=[...document.querySelectorAll('#group-contacts-list input:checked')].map(c=>c.value);
+  if(!checked.length){toast('Adiciona pelo menos um contacto');return;}
+  const members={[myUid]:myUsername};
+  checked.forEach(uid=>members[uid]=uid);
+  const gRef=await push(ref(db,'groups'),{name,creator:myUid,members,createdAt:Date.now()});
+  $('group-name-input').value='';
+  hideModal('create-group-modal');
+  toast('✅ Grupo "'+name+'" criado!');
+  loadGroups();
+};
+function loadGroups(){
+  onValue(ref(db,'groups'),snap=>{
+    const list=$('groups-list');list.innerHTML='';
+    const groups=snap.val()||{};
+    const myGroups=Object.entries(groups).filter(([id,g])=>g.members&&g.members[myUid]);
+    if(!myGroups.length){list.innerHTML='<div class="list-empty"><span class="list-empty-icon">👥</span>Sem grupos.<br>Cria um novo!</div>';return;}
+    myGroups.forEach(([id,g])=>{
+      const item=document.createElement('div');item.className='list-item';
+      item.innerHTML='<div style="width:44px;height:44px;border-radius:12px;background:var(--green);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0">👥</div><div class="item-info"><p>'+g.name+'</p><span>'+Object.keys(g.members||{}).length+' membros</span></div>';
+      item.onclick=()=>openGroupChat({id,...g});
+      list.appendChild(item);
+    });
+  });
+}
+function openGroupChat(group){
+  currentPeer={id:'group_'+group.id,username:group.name,isGroup:true,group};
+  $('chat-peer-name').textContent=group.name;
+  $('chat-peer-sub').textContent=Object.keys(group.members||{}).length+' membros';
+  const w=$('chat-peer-av-wrap');w.innerHTML='<div style="width:36px;height:36px;border-radius:50%;background:var(--green);display:flex;align-items:center;justify-content:center;font-size:16px">👥</div>';
+  $('messages').innerHTML='';showScreen('screen-chat');
+  const chatId='group_'+group.id;
+  if(msgListener)msgListener();
+  msgListener=onValue(ref(db,'messages/'+chatId),snap=>{
+    const data=snap.val();$('messages').innerHTML='';
+    if(!data){$('messages').innerHTML='<div style="flex:1;display:flex;align-items:center;justify-content:center;font-size:13px;color:var(--text3)">Sem mensagens no grupo.</div>';return;}
+    Object.entries(data).sort((a,b)=>a[1].ts-b[1].ts).forEach(([key,m])=>{if(m&&m.ts)addBubble({...m,fbKey:key},chatId);});
+    $('messages').scrollTop=99999;
+  });
+  loadPinned(chatId);
+}
+
+// POLLS
+window.sendPoll=async function(){
+  const q=$('poll-question').value.trim();
+  const opts=[$('poll-opt1'),$('poll-opt2'),$('poll-opt3'),$('poll-opt4')].map(i=>i.value.trim()).filter(Boolean);
+  if(!q||opts.length<2){toast('Pergunta e pelo menos 2 opções obrigatórias');return;}
+  if(!currentPeer)return;
+  const chatId=currentPeer.isGroup?'group_'+currentPeer.group.id:cid(myUid,currentPeer.id);
+  const votes={};opts.forEach(o=>votes[o]=0);
+  const dr=await push(ref(db,'messages/'+chatId),{from:myUid,fromName:myUsername,type:'poll',question:q,options:opts,votes,ts:Date.now()});
+  await update(dr,{fbKey:dr.key});
+  [$('poll-question'),$('poll-opt1'),$('poll-opt2'),$('poll-opt3'),$('poll-opt4')].forEach(i=>i.value='');
+  hideModal('poll-modal');toast('📊 Enquete enviada!');
+};
+window.votePoll=async function(fbKey,option,chatId){
+  await update(ref(db,'messages/'+chatId+'/'+fbKey+'/votes'),{[option+'_'+myUid]:1});
+  toast('✅ Voto registado!');
+};
+
+// GIF
+window.showGifPicker=function(){showModal('gif-modal');};
+window.searchGifs=async function(q){
+  const res=$('gif-results');
+  if(!q.trim()){res.innerHTML='<div style="text-align:center;padding:20px;color:var(--text2);font-size:13px;grid-column:1/-1">Pesquisa um GIF acima</div>';return;}
+  res.innerHTML='<div style="text-align:center;padding:20px;color:var(--text2);font-size:13px;grid-column:1/-1">A pesquisar...</div>';
+  try{
+    const r=await fetch('https://api.giphy.com/v1/gifs/search?api_key=dc6zaTOxFJmzC&q='+encodeURIComponent(q)+'&limit=8&rating=g');
+    const d=await r.json();
+    res.innerHTML='';
+    if(!d.data.length){res.innerHTML='<div style="text-align:center;padding:20px;color:var(--text2);font-size:13px;grid-column:1/-1">Sem resultados</div>';return;}
+    d.data.forEach(gif=>{
+      const img=document.createElement('img');
+      img.src=gif.images.fixed_height_small.url;
+      img.style.cssText='width:100%;border-radius:8px;cursor:pointer;object-fit:cover';
+      img.onclick=()=>{sendGif(gif.images.fixed_height.url);hideModal('gif-modal');};
+      res.appendChild(img);
+    });
+  }catch(e){res.innerHTML='<div style="text-align:center;padding:20px;color:var(--red);font-size:13px;grid-column:1/-1">Erro ao carregar GIFs</div>';}
+};
+async function sendGif(url){
+  if(!currentPeer)return;
+  const chatId=currentPeer.isGroup?'group_'+currentPeer.group.id:cid(myUid,currentPeer.id);
+  const dr=await push(ref(db,'messages/'+chatId),{from:myUid,fromName:myUsername,type:'gif',url,ts:Date.now()});
+  await update(dr,{fbKey:dr.key});
+}
+
+// LOCATION
+window.shareLocation=function(){
+  if(!navigator.geolocation){toast('Geolocalização não disponível');return;}
+  navigator.geolocation.getCurrentPosition(async pos=>{
+    if(!currentPeer)return;
+    const chatId=currentPeer.isGroup?'group_'+currentPeer.group.id:cid(myUid,currentPeer.id);
+    const lat=pos.coords.latitude,lng=pos.coords.longitude;
+    const dr=await push(ref(db,'messages/'+chatId),{from:myUid,fromName:myUsername,type:'location',lat,lng,ts:Date.now()});
+    await update(dr,{fbKey:dr.key});
+    toast('📍 Localização partilhada!');
+  },()=>toast('Não foi possível obter localização'));
+};
+
+// AI MODE
+let aiMode=false;
+window.toggleAIMode=function(){
+  aiMode=!aiMode;
+  $('ai-mode-bar').style.display=aiMode?'block':'none';
+  $('ai-btn').style.background=aiMode?'rgba(147,51,234,0.3)':'none';
+  toast(aiMode?'🤖 Modo IA ativo!':'Modo IA desativado');
+};
+
+async function callClaude(text){
+  try{
+    const r=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        model:'claude-sonnet-4-20250514',
+        max_tokens:500,
+        system:'És o assistente do LockTalk. Responde de forma curta e amigável em português.',
+        messages:[{role:'user',content:text}]
+      })
+    });
+    const d=await r.json();
+    return d.content?.[0]?.text||'Não consegui responder.';
+  }catch(e){return 'Erro ao contactar a IA.';}
+}
+
 </script>
 </body>
 </html>
