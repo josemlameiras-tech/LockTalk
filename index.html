@@ -1,17 +1,12 @@
 <!DOCTYPE html>
 <html lang="pt">
 <head>
-  <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="LockTalk">
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
 <meta name="theme-color" content="#1D9E75"/>
 <meta name="mobile-web-app-capable" content="yes"/>
 <meta name="apple-mobile-web-app-capable" content="yes"/>
 <meta name="apple-mobile-web-app-title" content="LockTalk"/>
-  <link rel="icon" href="icon.png">
-<link rel="apple-touch-icon" href="icon.png">
 <title>LockTalk</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
@@ -262,6 +257,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-seri
     <button class="hbtn" onclick="startCall('video')">📹</button>
     <button class="hbtn" onclick="toggleAIMode()" id="ai-btn">🤖</button>
     <button class="hbtn" onclick="showModal('poll-modal')">📊</button>
+    <button class="hbtn" onclick="showModal('wallpaper-modal')">🖼️</button>
     <button class="hbtn" onclick="toggleThemeBar()">🎨</button>
     <button class="hbtn" onclick="showModal('delete-modal')">🗑️</button>
   </div>
@@ -279,6 +275,11 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-seri
   <div id="messages"></div>
   <div id="ai-mode-bar" style="display:none;padding:6px 14px;background:linear-gradient(90deg,#1a0d2e,#2d1b4e);flex-shrink:0;font-size:12px;color:#b898d8;text-align:center">🤖 Modo IA ativo — Claude responde automaticamente</div>
   <div class="typing-row" id="typing-row"></div>
+  <div id="reply-bar" style="display:none;padding:8px 14px;border-top:1px solid var(--border);background:var(--bg2);flex-shrink:0;flex-direction:row;align-items:center;gap:8px">
+    <div style="width:3px;height:36px;background:var(--green);border-radius:2px;flex-shrink:0"></div>
+    <div style="flex:1;min-width:0"><div style="font-size:11px;color:var(--green);font-weight:600">A responder</div><div id="reply-preview" style="font-size:12px;color:var(--text2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis"></div></div>
+    <button onclick="cancelReply()" style="background:none;border:none;cursor:pointer;color:var(--text3);font-size:18px">✕</button>
+  </div>
   <div id="emoji-picker-main"></div>
   <div id="input-area">
     <button class="iab" onclick="document.getElementById('img-input').click()">📎</button>
@@ -447,6 +448,28 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-seri
       <div style="text-align:center;padding:20px;color:var(--text2);font-size:13px;grid-column:1/-1">Pesquisa um GIF acima</div>
     </div>
     <div class="mbtns" style="margin-top:10px"><button class="btn-c" onclick="hideModal('gif-modal')">Fechar</button></div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="wallpaper-modal">
+  <div class="modal">
+    <h3>🖼️ Wallpaper</h3>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px">
+      <div onclick="setWallpaper('none')" style="height:54px;background:var(--bg);border-radius:8px;cursor:pointer;border:2px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--text2)">Nenhum</div>
+      <div onclick="setWallpaper('g1')" style="height:54px;background:linear-gradient(135deg,#1a1a2e,#0f3460);border-radius:8px;cursor:pointer;border:2px solid var(--border)"></div>
+      <div onclick="setWallpaper('g2')" style="height:54px;background:linear-gradient(135deg,#0d2137,#0d5c63);border-radius:8px;cursor:pointer;border:2px solid var(--border)"></div>
+      <div onclick="setWallpaper('g3')" style="height:54px;background:linear-gradient(135deg,#1a0533,#3d0066);border-radius:8px;cursor:pointer;border:2px solid var(--border)"></div>
+      <div onclick="setWallpaper('g4')" style="height:54px;background:linear-gradient(135deg,#0d1f0d,#1a3a1a);border-radius:8px;cursor:pointer;border:2px solid var(--border)"></div>
+      <div onclick="setWallpaper('dots')" style="height:54px;border-radius:8px;cursor:pointer;border:2px solid var(--border);background:#0d1117;background-image:radial-gradient(circle,#30363d 1px,transparent 1px);background-size:20px 20px"></div>
+    </div>
+    <div class="mbtns"><button class="btn-c" onclick="hideModal('wallpaper-modal')">Fechar</button></div>
+  </div>
+</div>
+<div class="modal-overlay" id="stats-modal">
+  <div class="modal">
+    <h3>📊 Estatísticas</h3>
+    <div id="stats-content" style="font-size:14px;color:var(--text2);line-height:2.2"></div>
+    <div class="mbtns"><button class="btn-c" onclick="hideModal('stats-modal')">Fechar</button></div>
   </div>
 </div>
 <div class="modal-overlay" id="delete-modal">
@@ -668,6 +691,7 @@ function openChat(peer){
   const w=$('chat-peer-av-wrap');w.innerHTML='';w.appendChild(renderAv(peer.avatar,peer.username,36,peer.online));
   $('messages').innerHTML='';
   $('ai-mode-bar').style.display='none';aiMode=false;
+  loadWallpaper(peer.id);
   showScreen('screen-chat');
   const chatId=cid(myUid,peer.id);
   if(msgListener)msgListener();
@@ -702,7 +726,8 @@ function addBubble(m,chatId){
   const isText=m.type==='text'||!m.type;
   const actBtns=isText?`<div style="display:flex;gap:4px;margin-top:3px"><button class="ma-btn" onclick="(async function(btn){btn.textContent='⏳';const bubble=btn.closest('.msg').querySelector('.bubble');const t=bubble?.childNodes[0]?.textContent?.trim();if(!t)return;const tr=await translateText(t);btn.textContent='🌐';if(tr&&tr!==t){let el=bubble.querySelector('.tr');if(!el){el=document.createElement('div');el.className='tr';el.style='font-size:12px;color:var(--text2);margin-top:4px;font-style:italic';bubble.appendChild(el);}el.textContent='🌐 '+tr;toast('Traduzido!');}else toast('Sem tradução');})(this)">🌐</button><button class="ma-btn" onclick="startForward('${(m.text||'').replace(/'/g,'&apos;')}')">↪️</button></div>`:'';
   div.innerHTML=`${content}${rxns}<div class="msg-meta">${gt(m.ts)}${tick}</div>${actBtns}`;
-  div.querySelector('.bubble')?.addEventListener('dblclick',()=>showRxnPicker(div,m.fbKey,chatId));
+  div.querySelector('.bubble')?.addEventListener('dblclick',e=>{showRxnPicker(div,m.fbKey,chatId);floatEmoji('❤️',div);});
+  if(m.type==='text'&&!isMe){div.querySelector('.bubble')?.addEventListener('contextmenu',e=>{e.preventDefault();setReply(m.fbKey,m.text,currentPeer?.username||'');});}
   if(m.type==='text'&&isMe){
     div.querySelector('.bubble')?.addEventListener('contextmenu',e=>{e.preventDefault();pinMessage(m.fbKey,m.text,chatId);});
   }
@@ -776,7 +801,10 @@ window.sendMsg=async function(){
   const text=$('msg-input').value.trim();if(!text||!currentPeer)return;
   $('msg-input').value='';$('msg-input').style.height='auto';
   const chatId=currentPeer.isGroup?'group_'+currentPeer.group.id:cid(myUid,currentPeer.id);
-  const dr=await push(ref(db,'messages/'+chatId),{from:myUid,fromName:myUsername,type:'text',text,ts:Date.now()});
+  const md={from:myUid,fromName:myUsername,type:'text',text,ts:Date.now()};
+  if(replyTo){md.replyTo=replyTo.fbKey;md.replyText=replyTo.text;md.replyFrom=replyTo.fromName||currentPeer?.username||'';}
+  const dr=await push(ref(db,'messages/'+chatId),md);
+  cancelReply();
   await update(dr,{fbKey:dr.key});
   if(!currentPeer.isGroup)set(ref(db,'typing/'+chatId+'/'+myUid),false);
   if(aiMode&&!currentPeer.isGroup){
@@ -943,7 +971,7 @@ window.closeStory=function(){$('story-viewer').style.display='none';};
 
 // CALLS (WebRTC)
 let localStream=null,peerConn=null,callTimerInt=null,callSecs=0,callType='audio',incomingData=null,callList=null;
-const ICE={iceServers:[{urls:'stun:stun.l.google.com:19302'},{urls:'stun:stun1.l.google.com:19302'}]};
+const ICE={iceServers:[{urls:'stun:stun.l.google.com:19302'},{urls:'stun:stun1.l.google.com:19302'},{urls:'stun:stun2.l.google.com:19302'}]};let candListener=null;
 
 window.startCall=async function(type){
   if(!currentPeer){toast('Seleciona um contacto primeiro');return;}
@@ -955,18 +983,21 @@ window.startCall=async function(type){
     else $('call-video-local').style.display='block';
     peerConn=new RTCPeerConnection(ICE);
     localStream.getTracks().forEach(t=>peerConn.addTrack(t,localStream));
-    peerConn.ontrack=e=>{$('call-video-remote').srcObject=e.streams[0];};
-    peerConn.onicecandidate=async e=>{if(e.candidate)await push(ref(db,'calls/'+currentPeer.id+'/cands'),{c:e.candidate.toJSON(),from:myUid});};
+    peerConn.ontrack=e=>{const rv=$('call-video-remote');if(rv)rv.srcObject=e.streams[0];};
+    peerConn.onicecandidate=async e=>{if(e.candidate)await push(ref(db,'calls/'+currentPeer.id+'/cands'),{c:JSON.stringify(e.candidate.toJSON()),from:myUid,ts:Date.now()});};
+    peerConn.onconnectionstatechange=()=>{const s=peerConn.connectionState;if(s==='connected'){const st=$('call-status-txt');if(st)st.style.display='none';const ti=$('call-timer-txt');if(ti)ti.style.display='block';startCallTimer();}if(s==='disconnected'||s==='failed')endCall();};
+    if(candListener)candListener();
+    candListener=onValue(ref(db,'calls/'+myUid+'/cands'),async snap=>{const cands=snap.val();if(!cands||!peerConn)return;for(const [k,v] of Object.entries(cands)){if(v.from!==myUid){try{await peerConn.addIceCandidate(new RTCIceCandidate(JSON.parse(v.c)));}catch(e){}remove(ref(db,'calls/'+myUid+'/cands/'+k));}}});
     const offer=await peerConn.createOffer();
     await peerConn.setLocalDescription(offer);
-    await set(ref(db,'calls/'+currentPeer.id+'/offer'),{sdp:offer,from:myUid,name:myUsername,av:myAvatar||'',type,ts:Date.now()});
+    await set(ref(db,'calls/'+currentPeer.id+'/offer'),{sdp:JSON.stringify(offer),from:myUid,name:myUsername,av:myAvatar||'',type,ts:Date.now()});
     $('call-peer-name').textContent='@'+currentPeer.username;
     $('call-status-txt').textContent=type==='video'?'📹 A chamar...':'📞 A chamar...';
     $('call-timer-txt').style.display='none';
     $('call-screen').style.display='flex';
     onValue(ref(db,'calls/'+myUid+'/answer'),async snap=>{
       const ans=snap.val();if(!ans||!peerConn)return;
-      await peerConn.setRemoteDescription(new RTCSessionDescription(ans.sdp));
+      try{await peerConn.setRemoteDescription(new RTCSessionDescription(JSON.parse(ans.sdp)));}catch(e){console.error('SDP parse err',e);}
       $('call-status-txt').style.display='none';$('call-timer-txt').style.display='block';
       startCallTimer();remove(ref(db,'calls/'+myUid+'/answer'));
     },{onlyOnce:true});
@@ -993,12 +1024,15 @@ window.acceptCall=async function(){
     if(callType!=='video')$('call-video-local').style.display='none';else $('call-video-local').style.display='block';
     peerConn=new RTCPeerConnection(ICE);
     localStream.getTracks().forEach(t=>peerConn.addTrack(t,localStream));
-    peerConn.ontrack=e=>{$('call-video-remote').srcObject=e.streams[0];};
-    peerConn.onicecandidate=async e=>{if(e.candidate)await push(ref(db,'calls/'+incomingData.from+'/cands'),{c:e.candidate.toJSON(),from:myUid});};
-    await peerConn.setRemoteDescription(new RTCSessionDescription(incomingData.sdp));
+    peerConn.ontrack=e=>{const rv=$('call-video-remote');if(rv)rv.srcObject=e.streams[0];};
+    peerConn.onicecandidate=async e=>{if(e.candidate)await push(ref(db,'calls/'+incomingData.from+'/cands'),{c:JSON.stringify(e.candidate.toJSON()),from:myUid,ts:Date.now()});};
+    peerConn.onconnectionstatechange=()=>{const s=peerConn.connectionState;if(s==='connected'){const st=$('call-status-txt');if(st)st.style.display='none';const ti=$('call-timer-txt');if(ti)ti.style.display='block';startCallTimer();}if(s==='disconnected'||s==='failed')endCall();};
+    if(candListener)candListener();
+    candListener=onValue(ref(db,'calls/'+myUid+'/cands'),async snap=>{const cands=snap.val();if(!cands||!peerConn)return;for(const [k,v] of Object.entries(cands)){if(v.from!==myUid){try{await peerConn.addIceCandidate(new RTCIceCandidate(JSON.parse(v.c)));}catch(e){}remove(ref(db,'calls/'+myUid+'/cands/'+k));}}});
+    await peerConn.setRemoteDescription(new RTCSessionDescription(JSON.parse(incomingData.sdp)));
     const answer=await peerConn.createAnswer();
     await peerConn.setLocalDescription(answer);
-    await set(ref(db,'calls/'+incomingData.from+'/answer'),{sdp:answer,from:myUid});
+    await set(ref(db,'calls/'+incomingData.from+'/answer'),{sdp:JSON.stringify(answer),from:myUid});
     await remove(ref(db,'calls/'+myUid+'/offer'));
     $('call-peer-name').textContent='@'+(incomingData.name||'');
     $('call-status-txt').style.display='none';$('call-timer-txt').style.display='block';
@@ -1010,7 +1044,9 @@ window.endCall=function(){
   if(localStream)localStream.getTracks().forEach(t=>t.stop());
   if(peerConn)peerConn.close();if(callTimerInt)clearInterval(callTimerInt);
   $('call-screen').style.display='none';callSecs=0;localStream=null;peerConn=null;
-  if(myUid)remove(ref(db,'calls/'+myUid));toast('📵 Chamada terminada');
+  if(candListener){candListener();candListener=null;}
+  if(myUid){remove(ref(db,'calls/'+myUid+'/offer'));remove(ref(db,'calls/'+myUid+'/answer'));remove(ref(db,'calls/'+myUid+'/cands'));}
+  toast('📵 Chamada terminada');
 };
 let muted=false,camOff=false;
 window.toggleMute=function(){muted=!muted;if(localStream)localStream.getAudioTracks().forEach(t=>t.enabled=!muted);$('mute-btn').textContent=muted?'🔇':'🎤';};
@@ -1184,6 +1220,76 @@ async function callClaude(text){
     return d.content?.[0]?.text||'Não consegui responder.';
   }catch(e){return 'Erro ao contactar a IA.';}
 }
+
+
+// REPLY
+let replyTo=null;
+window.setReply=function(fbKey,text,fromName){replyTo={fbKey,text,fromName};const rb=$('reply-bar');if(rb)rb.style.display='flex';const rp=$('reply-preview');if(rp)rp.textContent=(fromName?fromName+': ':'')+text;};
+window.cancelReply=function(){replyTo=null;const rb=$('reply-bar');if(rb)rb.style.display='none';};
+
+// WALLPAPER
+window.setWallpaper=function(key){
+  const msgs=$('messages');if(!msgs)return;
+  const wp={none:'',g1:'linear-gradient(135deg,#1a1a2e,#0f3460)',g2:'linear-gradient(135deg,#0d2137,#0d5c63)',g3:'linear-gradient(135deg,#1a0533,#3d0066)',g4:'linear-gradient(135deg,#0d1f0d,#1a3a1a)',dots:'dots'};
+  if(key==='none'){msgs.style.background='';msgs.style.backgroundImage='';}
+  else if(key==='dots'){msgs.style.background='#0d1117';msgs.style.backgroundImage='radial-gradient(circle,#30363d 1px,transparent 1px)';msgs.style.backgroundSize='20px 20px';}
+  else{msgs.style.background=wp[key]||'';msgs.style.backgroundImage='';}
+  if(currentPeer)localStorage.setItem('lt_wp_'+(currentPeer.id||''),key);
+  hideModal('wallpaper-modal');toast('🖼️ Wallpaper aplicado!');
+};
+function loadWallpaper(pid){
+  const msgs=$('messages');if(!msgs){msgs&&(msgs.style.background='');return;}
+  msgs.style.background='';msgs.style.backgroundImage='';
+  if(!pid)return;
+  const k=localStorage.getItem('lt_wp_'+pid);
+  if(k)setWallpaper(k);
+}
+
+// FLOAT EMOJI
+function floatEmoji(emoji,el){
+  const rect=el.getBoundingClientRect();
+  const span=document.createElement('span');
+  span.textContent=emoji;
+  span.style.cssText='position:fixed;font-size:28px;pointer-events:none;z-index:9999;left:'+(rect.left+rect.width/2-14)+'px;top:'+rect.top+'px;transition:all 1.2s ease-out';
+  document.body.appendChild(span);
+  setTimeout(()=>{span.style.transform='translateY(-100px) scale(1.8)';span.style.opacity='0';},30);
+  setTimeout(()=>span.remove(),1300);
+}
+
+// STATS
+window.showStats=async function(){
+  const sc=$('stats-content');if(!sc)return;
+  sc.innerHTML='A calcular...';showModal('stats-modal');
+  try{
+    const snap=await get(ref(db,'messages'));const all=snap.val()||{};
+    let total=0,mine=0,imgs=0,voices=0,gifs=0;
+    Object.entries(all).forEach(([chatId,msgs])=>{
+      if(!chatId.includes(myUid))return;
+      Object.values(msgs).forEach(m=>{total++;if(m.from===myUid)mine++;if(m.type==='image')imgs++;if(m.type==='voice')voices++;if(m.type==='gif')gifs++;});
+    });
+    sc.innerHTML='<div>💬 Total mensagens: <strong>'+total+'</strong></div><div>✍️ Minhas mensagens: <strong>'+mine+'</strong></div><div>📷 Imagens: <strong>'+imgs+'</strong></div><div>🎤 Áudios: <strong>'+voices+'</strong></div><div>GIF GIFs: <strong>'+gifs+'</strong></div>';
+  }catch(e){sc.innerHTML='Erro ao calcular.';}
+};
+
+// EXPORT
+window.exportChat=async function(){
+  if(!currentPeer){toast('Abre um chat primeiro');return;}
+  const chatId=currentPeer.isGroup?'group_'+(currentPeer.group&&currentPeer.group.id):cid(myUid,currentPeer.id);
+  try{
+    const snap=await get(ref(db,'messages/'+chatId));
+    const msgs=Object.values(snap.val()||{}).filter(m=>m&&m.ts).sort((a,b)=>a.ts-b.ts);
+    let txt='LockTalk — @'+currentPeer.username+'\nExportado: '+new Date().toLocaleString('pt-PT')+'\n\n';
+    msgs.forEach(m=>{
+      const time=new Date(m.ts).toLocaleString('pt-PT');
+      const name=m.from===myUid?'Eu':'@'+currentPeer.username;
+      if(m.type==='text')txt+='['+time+'] '+name+': '+m.text+'\n';
+      else txt+='['+time+'] '+name+': ['+m.type+']\n';
+    });
+    const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([txt],{type:'text/plain'}));
+    a.download='locktalk_'+currentPeer.username+'.txt';a.click();
+    toast('💾 Conversa exportada!');
+  }catch(e){toast('Erro ao exportar');}
+};
 
 </script>
 </body>
