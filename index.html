@@ -956,13 +956,21 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-seri
 <script type="module">
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js';
 import { getDatabase, ref, set, get, onValue, push, remove, onDisconnect, update, query, orderByChild, equalTo } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js';
-import { getAuth, GoogleAuthProvider, signInWithPopup, signInWithRedirect, getRedirectResult, onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js';
-
+import { getAuth, GoogleAuthProvider, signInWithRedirect, getRedirectResult, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 const FB={apiKey:"AIzaSyBAnaHYfAyMg_ZCUpWfY2wzpKbOKyXIJtw",authDomain:"locktalk-b8306.firebaseapp.com",databaseURL:"https://locktalk-b8306-default-rtdb.europe-west1.firebasedatabase.app",projectId:"locktalk-b8306",storageBucket:"locktalk-b8306.firebasestorage.app",messagingSenderId:"296055220695",appId:"1:296055220695:web:64e71a7b4c68d2ec630392"};
 const fbApp=initializeApp(FB);
 const db=getDatabase(fbApp);
 const auth=getAuth(fbApp);
 const provider=new GoogleAuthProvider();
+  getRedirectResult(auth)
+  .then((result) => {
+    if (result?.user) {
+      console.log("Login sucesso:", result.user);
+    }
+  })
+  .catch((e) => {
+    $('welcome-error').textContent = 'Erro: ' + e.message;
+  });
 const EMOJIS=['😀','😂','❤️','👍','🔥','😍','🎉','😢','😮','👏','🙏','💪','✅','😎','🤔','💯','🥰','😡','👋','🎊'];
 
 let myUid=null,myUsername=null,myEmail=null,myAvatar=null,myGooglePhoto=null;
@@ -1038,7 +1046,7 @@ setAppTheme(_savedTheme);
 window.doGoogleLogin=async function(){
   $('google-btn').disabled=true;$('google-btn').textContent='A entrar...';
   try{
-    await signInWithPopup(auth,provider);
+    await signInWithRedirect(auth, provider);
   }catch(e){
     $('welcome-error').textContent='Erro ao entrar com Google: '+e.message;
     $('google-btn').disabled=false;
