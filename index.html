@@ -164,13 +164,101 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-seri
 
 ::-webkit-scrollbar{width:3px}
 ::-webkit-scrollbar-thumb{background:var(--surface3);border-radius:2px}
-.secret-badge{font-size:10px;background:rgba(248,81,73,0.2);color:#f85149;padding:2px 6px;border-radius:10px;margin-left:4px}.ma-btn{background:var(--surface3);border:none;cursor:pointer;font-size:13px;padding:3px 8px;border-radius:8px;color:var(--text2)}.ma-btn:hover{background:var(--border)}</style>
+.secret-badge{font-size:10px;background:rgba(248,81,73,0.2);color:#f85149;padding:2px 6px;border-radius:10px;margin-left:4px}.ma-btn{background:var(--surface3);border:none;cursor:pointer;font-size:13px;padding:3px 8px;border-radius:8px;color:var(--text2)}.ma-btn:hover{background:var(--border)}
+@keyframes pulse-bg{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.1);opacity:.7}}
+@keyframes logo-pop{0%{transform:scale(0.5);opacity:0}80%{transform:scale(1.1)}100%{transform:scale(1);opacity:1}}
+@keyframes slide-in{0%{transform:translateX(40px);opacity:0}100%{transform:translateX(0);opacity:1}}
+.feat-pill{background:rgba(29,158,117,0.15);color:#1D9E75;border:1px solid rgba(29,158,117,0.3);border-radius:20px;padding:5px 14px;font-size:13px;font-weight:500}
+.demo-feat{display:flex;align-items:center;gap:14px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.06);border-radius:12px;padding:12px 14px;text-align:left;font-size:20px}
+.demo-feat div{display:flex;flex-direction:column}
+.demo-feat b{font-size:14px;color:#e6edf3;font-weight:600}
+.demo-feat span{font-size:12px;color:#8b949e;margin-top:2px}
+.demo-dot{width:8px;height:8px;border-radius:50%;background:#30363d;transition:all .3s}
+.demo-dot.active{width:24px;border-radius:4px;background:#1D9E75}
+.demo-slide{animation:slide-in .4s ease-out}
+</style>
 </head>
 <body>
 <div id="app">
 
 <!-- WELCOME -->
-<div class="screen active" id="screen-welcome">
+
+<!-- SPLASH / DEMO SCREEN -->
+<div class="screen active" id="screen-splash">
+  <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0;background:linear-gradient(180deg,#0d1117 0%,#161b22 100%);overflow:hidden;position:relative">
+    
+    <!-- Animated background circles -->
+    <div style="position:absolute;width:300px;height:300px;border-radius:50%;background:rgba(29,158,117,0.06);top:-80px;right:-80px;animation:pulse-bg 3s ease-in-out infinite"></div>
+    <div style="position:absolute;width:200px;height:200px;border-radius:50%;background:rgba(29,158,117,0.04);bottom:-40px;left:-40px;animation:pulse-bg 3s ease-in-out infinite 1s"></div>
+    
+    <!-- Demo slides -->
+    <div id="demo-slides" style="width:100%;display:flex;flex-direction:column;align-items:center;gap:0">
+      
+      <!-- Slide 1: Logo + title -->
+      <div class="demo-slide active" id="slide-0" style="display:flex;flex-direction:column;align-items:center;gap:20px;padding:40px 28px;text-align:center">
+        <img src="data:image/jpeg;base64,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" style="width:100px;height:100px;border-radius:50%;border:3px solid #1D9E75;box-shadow:0 0 40px rgba(29,158,117,0.3);animation:logo-pop .6s ease-out"/>
+        <div>
+          <p style="font-size:36px;font-weight:800;color:#e6edf3;letter-spacing:-1px"><span style="color:#1D9E75">Lock</span>Talk</p>
+          <p style="font-size:15px;color:#8b949e;margin-top:6px">A nova forma de comunicar</p>
+        </div>
+        <div style="display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:8px">
+          <span class="feat-pill">💬 Mensagens</span>
+          <span class="feat-pill">📞 Chamadas</span>
+          <span class="feat-pill">📹 Vídeo</span>
+          <span class="feat-pill">🔐 Seguro</span>
+        </div>
+      </div>
+
+      <!-- Slide 2: Features -->
+      <div class="demo-slide" id="slide-1" style="display:none;flex-direction:column;align-items:center;gap:20px;padding:40px 28px;text-align:center;width:100%">
+        <p style="font-size:22px;font-weight:700;color:#e6edf3">Funcionalidades únicas</p>
+        <div style="display:flex;flex-direction:column;gap:12px;width:100%;max-width:320px">
+          <div class="demo-feat">🤖 <div><b>Chat com IA</b><span>Claude integrado nas conversas</span></div></div>
+          <div class="demo-feat">🔐 <div><b>Mensagens secretas</b><span>Protegidas por password</span></div></div>
+          <div class="demo-feat">🌐 <div><b>Tradução automática</b><span>Qualquer idioma, instantâneo</span></div></div>
+          <div class="demo-feat">📌 <div><b>Mensagens fixadas</b><span>Fixa o que é importante</span></div></div>
+        </div>
+      </div>
+
+      <!-- Slide 3: More features -->
+      <div class="demo-slide" id="slide-2" style="display:none;flex-direction:column;align-items:center;gap:20px;padding:40px 28px;text-align:center;width:100%">
+        <p style="font-size:22px;font-weight:700;color:#e6edf3">E muito mais...</p>
+        <div style="display:flex;flex-direction:column;gap:12px;width:100%;max-width:320px">
+          <div class="demo-feat">👥 <div><b>Grupos</b><span>Conversa com vários amigos</span></div></div>
+          <div class="demo-feat">📸 <div><b>Stories</b><span>Partilha momentos por 24h</span></div></div>
+          <div class="demo-feat">📊 <div><b>Enquetes</b><span>Vota com os teus contactos</span></div></div>
+          <div class="demo-feat">🎨 <div><b>Temas</b><span>Personaliza cada conversa</span></div></div>
+        </div>
+      </div>
+
+      <!-- Slide 4: CTA -->
+      <div class="demo-slide" id="slide-3" style="display:none;flex-direction:column;align-items:center;gap:24px;padding:40px 28px;text-align:center">
+        <img src="data:image/jpeg;base64,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" style="width:80px;height:80px;border-radius:50%;border:2px solid #1D9E75"/>
+        <div>
+          <p style="font-size:24px;font-weight:700;color:#e6edf3">Pronto para começar?</p>
+          <p style="font-size:14px;color:#8b949e;margin-top:6px">Entra com a tua conta Google<br>em menos de 10 segundos</p>
+        </div>
+        <button onclick="skipToLogin()" style="background:#1D9E75;color:white;border:none;border-radius:14px;padding:16px 40px;font-size:16px;font-weight:700;cursor:pointer;font-family:inherit;width:100%;max-width:280px;transition:all .2s">Entrar agora →</button>
+        <button onclick="skipToLogin()" style="background:none;border:none;color:#8b949e;font-size:13px;cursor:pointer;font-family:inherit">Saltar introdução</button>
+      </div>
+
+    </div>
+
+    <!-- Progress dots -->
+    <div style="display:flex;gap:8px;margin-bottom:30px">
+      <div class="demo-dot active" id="dot-0"></div>
+      <div class="demo-dot" id="dot-1"></div>
+      <div class="demo-dot" id="dot-2"></div>
+      <div class="demo-dot" id="dot-3"></div>
+    </div>
+
+    <!-- Skip button -->
+    <button id="skip-btn" onclick="skipToLogin()" style="position:absolute;top:16px;right:16px;background:rgba(255,255,255,.1);border:none;color:#8b949e;font-size:12px;cursor:pointer;font-family:inherit;padding:6px 14px;border-radius:20px">Saltar</button>
+
+  </div>
+</div>
+
+<div class="screen" id="screen-welcome">
   <img class="auth-logo" src="data:image/jpeg;base64,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" alt="LockTalk"/>
   <p class="auth-title"><span>Lock</span>Talk</p>
   <p class="auth-sub">Mensagens seguras e em tempo real.<br>Entra com a tua conta Google.</p>
@@ -248,16 +336,15 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-seri
 <div class="screen" id="screen-chat">
   <div id="chat-header">
     <button id="back-btn" onclick="goBackFromChat()">&#8592;</button>
-    <div id="chat-peer-av-wrap" class="av-wrap" style="flex-shrink:0"></div>
+    <div id="chat-peer-av-wrap" class="av-wrap" style="flex-shrink:0;cursor:pointer" onclick="viewContactPhoto()"></div>
     <div style="flex:1;min-width:0">
-      <p id="chat-peer-name"></p>
+      <p id="chat-peer-name" style="cursor:pointer" onclick="openRenameContact()"></p>
       <span id="chat-peer-sub">online</span>
     </div>
     <button class="hbtn" onclick="startCall('audio')">📞</button>
     <button class="hbtn" onclick="startCall('video')">📹</button>
     <button class="hbtn" onclick="toggleAIMode()" id="ai-btn">🤖</button>
     <button class="hbtn" onclick="showModal('poll-modal')">📊</button>
-    <button class="hbtn" onclick="showModal('wallpaper-modal')">🖼️</button>
     <button class="hbtn" onclick="toggleThemeBar()">🎨</button>
     <button class="hbtn" onclick="showModal('delete-modal')">🗑️</button>
   </div>
@@ -275,11 +362,388 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-seri
   <div id="messages"></div>
   <div id="ai-mode-bar" style="display:none;padding:6px 14px;background:linear-gradient(90deg,#1a0d2e,#2d1b4e);flex-shrink:0;font-size:12px;color:#b898d8;text-align:center">🤖 Modo IA ativo — Claude responde automaticamente</div>
   <div class="typing-row" id="typing-row"></div>
-  <div id="reply-bar" style="display:none;padding:8px 14px;border-top:1px solid var(--border);background:var(--bg2);flex-shrink:0;flex-direction:row;align-items:center;gap:8px">
-    <div style="width:3px;height:36px;background:var(--green);border-radius:2px;flex-shrink:0"></div>
-    <div style="flex:1;min-width:0"><div style="font-size:11px;color:var(--green);font-weight:600">A responder</div><div id="reply-preview" style="font-size:12px;color:var(--text2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis"></div></div>
-    <button onclick="cancelReply()" style="background:none;border:none;cursor:pointer;color:var(--text3);font-size:18px">✕</button>
+  <div id="emoji-picker-main"></div>
+  <div id="plus-menu" style="display:none;position:absolute;bottom:70px;left:10px;background:var(--surface2);border:1px solid var(--border);border-radius:16px;padding:8px;z-index:300;box-shadow:0 8px 32px rgba(0,0,0,.4)">
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;min-width:220px">
+      <button onclick="document.getElementById('img-input').click();togglePlusMenu()" style="display:flex;flex-direction:column;align-items:center;gap:4px;padding:12px 6px;background:var(--surface3);border:none;border-radius:12px;cursor:pointer;color:var(--text);font-size:11px;font-family:inherit"><span style="font-size:24px">📷</span>Imagem</button>
+      <button onclick="showGifPicker();togglePlusMenu()" style="display:flex;flex-direction:column;align-items:center;gap:4px;padding:12px 6px;background:var(--surface3);border:none;border-radius:12px;cursor:pointer;color:var(--text);font-size:11px;font-family:inherit"><span style="font-size:24px">🎞️</span>GIF</button>
+      <button onclick="shareLocation();togglePlusMenu()" style="display:flex;flex-direction:column;align-items:center;gap:4px;padding:12px 6px;background:var(--surface3);border:none;border-radius:12px;cursor:pointer;color:var(--text);font-size:11px;font-family:inherit"><span style="font-size:24px">📍</span>Local.</button>
+      <button onclick="showModal('secret-msg-modal');togglePlusMenu()" style="display:flex;flex-direction:column;align-items:center;gap:4px;padding:12px 6px;background:var(--surface3);border:none;border-radius:12px;cursor:pointer;color:var(--text);font-size:11px;font-family:inherit"><span style="font-size:24px">🔐</span>Secreto</button>
+      <button onclick="showModal('poll-modal');togglePlusMenu()" style="display:flex;flex-direction:column;align-items:center;gap:4px;padding:12px 6px;background:var(--surface3);border:none;border-radius:12px;cursor:pointer;color:var(--text);font-size:11px;font-family:inherit"><span style="font-size:24px">📊</span>Enquete</button>
+      <button onclick="showModal('forward-modal');togglePlusMenu()" style="display:flex;flex-direction:column;align-items:center;gap:4px;padding:12px 6px;background:var(--surface3);border:none;border-radius:12px;cursor:pointer;color:var(--text);font-size:11px;font-family:inherit"><span style="font-size:24px">↪️</span>Reenv.</button>
+    </div>
   </div>
+  <div id="input-area">
+    <input type="file" id="img-input" accept="image/*" style="display:none" onchange="sendImage(this)"/>
+    <button class="iab" id="plus-btn" onclick="togglePlusMenu()" style="font-size:24px;font-weight:300;color:var(--green)">+</button>
+    <button class="iab" onclick="toggleEmoji()">😊</button>
+    <button class="iab" id="voice-btn" onmousedown="startRec()" onmouseup="stopRec()" ontouchstart="startRec(event)" ontouchend="stopRec(event)">🎤</button>
+    <textarea id="msg-input" placeholder="Mensagem..." rows="1"></textarea>
+    <button id="send-btn" onclick="sendMsg()"><svg viewBox="0 0 24 24"><path d="M2 21l21-9L2 3v7l15 2-15 2v7z"/></svg></button>
+  </div>PE html>
+<html lang="pt">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
+<meta name="theme-color" content="#1D9E75"/>
+<meta name="mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-title" content="LockTalk"/>
+<title>LockTalk</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+:root{
+  --chat-bg:#0d1117;--bubble-me:#1D9E75;--bubble-them:#21262d;
+  --bg:#0d1117;--bg2:#161b22;--bg3:#1c2333;
+  --surface:#161b22;--surface2:#21262d;--surface3:#30363d;
+  --green:#1D9E75;--green2:#0F6E56;--green-glow:rgba(29,158,117,0.15);
+  --text:#e6edf3;--text2:#8b949e;--text3:#484f58;
+  --border:#30363d;--red:#f85149;--blue:#58a6ff;
+}
+body.light{
+  --bg:#f0f2f5;--bg2:#fff;--bg3:#e8eaf0;
+  --surface:#fff;--surface2:#f8f9fa;--surface3:#e8eaf0;
+  --text:#111;--text2:#666;--text3:#aaa;
+  --border:#e0e0e0;--bubble-them:#fff;--chat-bg:#f0f2f5;
+}
+html,body{height:100%;overflow:hidden;background:var(--bg)}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;color:var(--text);display:flex;align-items:center;justify-content:center}
+#app{display:flex;flex-direction:column;width:100%;max-width:480px;height:100vh;max-height:100vh;background:var(--surface);overflow:hidden;position:relative}
+@media(min-width:500px){#app{height:720px;border-radius:20px;box-shadow:0 20px 60px rgba(0,0,0,0.6),0 0 0 1px var(--border)}}
+.screen{display:none;flex-direction:column;height:100%}
+.screen.active{display:flex}
+
+/* WELCOME */
+#screen-welcome{align-items:center;justify-content:center;gap:24px;padding:36px 28px;background:linear-gradient(180deg,var(--bg) 0%,var(--surface) 100%)}
+.auth-logo{width:90px;height:90px;border-radius:50%;object-fit:cover;border:2px solid var(--green);box-shadow:0 0 30px var(--green-glow)}
+.auth-title{font-size:28px;font-weight:700;color:var(--text);text-align:center;letter-spacing:-0.5px}
+.auth-title span{color:var(--green)}
+.auth-sub{font-size:14px;color:var(--text2);text-align:center;line-height:1.6;max-width:280px}
+.google-btn{display:flex;align-items:center;justify-content:center;gap:12px;background:#fff;color:#3c4043;border:1px solid #dadce0;border-radius:12px;padding:14px 24px;font-size:15px;font-weight:600;cursor:pointer;font-family:inherit;width:100%;max-width:320px;transition:all .2s;box-shadow:0 2px 8px rgba(0,0,0,0.15)}
+.google-btn:hover{box-shadow:0 4px 16px rgba(0,0,0,0.2);transform:translateY(-1px)}
+.google-btn:active{transform:translateY(0)}
+.google-btn:disabled{opacity:.6;cursor:not-allowed;transform:none}
+.google-icon{width:20px;height:20px;flex-shrink:0}
+.auth-error{font-size:13px;color:var(--red);text-align:center;min-height:18px;max-width:320px}
+
+/* PROFILE SETUP */
+#screen-setup{align-items:center;justify-content:center;gap:18px;padding:36px 28px;background:linear-gradient(180deg,var(--bg) 0%,var(--surface) 100%)}
+.setup-av{position:relative;cursor:pointer}
+.setup-av img{width:88px;height:88px;border-radius:50%;object-fit:cover;border:2px solid var(--green);box-shadow:0 0 20px var(--green-glow)}
+.setup-av-edit{position:absolute;bottom:2px;right:2px;background:var(--green);border-radius:50%;width:26px;height:26px;display:flex;align-items:center;justify-content:center;font-size:13px}
+.setup-form{display:flex;flex-direction:column;gap:12px;width:100%;max-width:320px}
+.setup-input{border-radius:12px;padding:13px 14px;font-size:15px;border:1px solid var(--border);outline:none;font-family:inherit;background:var(--surface2);color:var(--text);transition:border-color .2s,box-shadow .2s;width:100%}
+.setup-input:focus{border-color:var(--green);box-shadow:0 0 0 3px var(--green-glow)}
+.setup-input::placeholder{color:var(--text3)}
+.setup-btn{background:var(--green);color:white;border:none;border-radius:12px;padding:14px;font-size:15px;font-weight:600;cursor:pointer;font-family:inherit;width:100%;transition:all .2s}
+.setup-btn:hover{background:var(--green2)}
+.setup-btn:disabled{opacity:.5;cursor:not-allowed}
+.setup-error{font-size:13px;color:var(--red);text-align:center;min-height:18px}
+
+/* MAIN */
+#main-header{padding:12px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;background:var(--bg2);flex-shrink:0}
+#main-logo{width:30px;height:30px;border-radius:50%;object-fit:cover}
+#main-title-text{font-size:16px;font-weight:700;color:var(--text);flex:1;letter-spacing:-0.3px}
+#main-title-text span{color:var(--green)}
+.hbtn{width:34px;height:34px;border-radius:10px;background:none;border:none;cursor:pointer;font-size:17px;color:var(--text2);display:flex;align-items:center;justify-content:center;transition:background .15s}
+.hbtn:hover{background:var(--surface3)}
+.tabs{display:flex;border-bottom:1px solid var(--border);background:var(--bg2);flex-shrink:0;padding:0 4px}
+.tab{flex:1;padding:12px 8px;text-align:center;font-size:13px;color:var(--text2);cursor:pointer;border-bottom:2px solid transparent;font-weight:500;transition:all .15s}
+.tab.active{color:var(--green);border-bottom-color:var(--green)}
+.tab-content{display:none;flex:1;flex-direction:column;overflow:hidden}
+.tab-content.active{display:flex}
+.list-area{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch}
+.list-empty{padding:48px 20px;text-align:center;font-size:14px;color:var(--text2);line-height:2}
+.list-empty-icon{font-size:40px;display:block;margin-bottom:12px;opacity:.5}
+.list-item{display:flex;align-items:center;gap:12px;padding:13px 16px;border-bottom:1px solid var(--border);cursor:pointer;transition:background .1s}
+.list-item:active{background:var(--surface2)}
+.item-info{flex:1;min-width:0}
+.item-info p{font-size:14px;font-weight:500;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.item-info span{font-size:12px;color:var(--text2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block;max-width:220px;margin-top:2px}
+.item-meta{display:flex;flex-direction:column;align-items:flex-end;gap:4px;flex-shrink:0}
+.item-time{font-size:11px;color:var(--text3)}
+.unread-badge{background:var(--green);color:white;border-radius:20px;min-width:20px;height:20px;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;padding:0 6px}
+.add-bar{padding:10px 16px;border-bottom:1px solid var(--border);display:flex;gap:8px;flex-shrink:0;background:var(--bg2)}
+.add-bar input{flex:1;padding:9px 14px;border-radius:20px;border:1px solid var(--border);background:var(--surface2);color:var(--text);font-size:14px;outline:none;font-family:inherit;transition:border-color .2s}
+.add-bar input:focus{border-color:var(--green)}
+.add-bar button{padding:9px 18px;background:var(--green);color:white;border:none;border-radius:20px;font-size:13px;cursor:pointer;font-weight:600}
+.av-wrap{position:relative;flex-shrink:0}
+.av{border-radius:50%;object-fit:cover;border:1px solid var(--border)}
+.av-initials{border-radius:50%;background:var(--bg3);display:flex;align-items:center;justify-content:center;font-weight:700;color:var(--green);flex-shrink:0;border:1px solid var(--border)}
+.online-dot{width:10px;height:10px;border-radius:50%;background:#2ecc71;border:2px solid var(--surface);position:absolute;bottom:1px;right:1px}
+
+/* CHAT */
+#chat-header{padding:10px 14px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;background:var(--bg2);flex-shrink:0}
+#back-btn{background:none;border:none;cursor:pointer;font-size:22px;color:var(--text2);flex-shrink:0}
+#chat-peer-name{font-size:15px;font-weight:600;color:var(--text)}
+#chat-peer-sub{font-size:12px;color:var(--green)}
+#messages{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:6px;background:var(--bg);-webkit-overflow-scrolling:touch}
+.msg{display:flex;flex-direction:column;max-width:80%}
+.msg.me{align-self:flex-end;align-items:flex-end}
+.msg.them{align-self:flex-start;align-items:flex-start}
+.bubble{padding:10px 14px;border-radius:18px;font-size:14px;line-height:1.5;word-break:break-word}
+.msg.me .bubble{background:var(--green);color:#fff;border-bottom-right-radius:5px}
+.msg.them .bubble{background:var(--surface2);color:var(--text);border:1px solid var(--border);border-bottom-left-radius:5px}
+.msg-meta{font-size:11px;color:var(--text3);margin-top:3px;padding:0 4px;display:flex;align-items:center;gap:3px}
+.tick{color:var(--blue)}
+.msg-img{max-width:220px;border-radius:12px;cursor:pointer;display:block;margin-bottom:2px}
+.voice-bubble{display:flex;align-items:center;gap:10px;padding:8px 12px;min-width:160px}
+.vplay{width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,0.2);border:none;cursor:pointer;color:white;font-size:14px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.vbar{flex:1;height:3px;background:rgba(255,255,255,0.3);border-radius:2px}
+.vdur{font-size:11px;color:rgba(255,255,255,.8)}
+.reactions-bar{display:flex;gap:3px;margin-top:3px;flex-wrap:wrap}
+.rpill{background:var(--surface3);border:1px solid var(--border);border-radius:20px;padding:2px 8px;font-size:12px;cursor:pointer}
+.rpill.mine{border-color:var(--green);background:var(--green-glow)}
+.typing-row{padding:4px 16px;font-size:12px;color:var(--text3);height:22px;background:var(--bg);flex-shrink:0}
+#input-area{padding:10px 12px;border-top:1px solid var(--border);display:flex;gap:8px;align-items:flex-end;background:var(--bg2);flex-shrink:0}
+.iab{width:36px;height:36px;border-radius:50%;background:var(--surface3);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;color:var(--text2);transition:all .15s}
+.iab:hover{background:var(--bg3);color:var(--green)}
+#voice-btn.recording{background:var(--red);color:white;animation:pulse 1s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.6}}
+#msg-input{flex:1;resize:none;border:1px solid var(--border);border-radius:20px;padding:9px 16px;font-size:14px;font-family:inherit;line-height:1.5;max-height:100px;outline:none;background:var(--surface2);color:var(--text);transition:border-color .2s}
+#msg-input:focus{border-color:var(--green)}
+#msg-input::placeholder{color:var(--text3)}
+#send-btn{width:38px;height:38px;border-radius:50%;background:var(--green);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .2s}
+#send-btn:hover{background:var(--green2);transform:scale(1.05)}
+#send-btn svg{width:15px;height:15px;fill:white}
+#emoji-picker-main{position:absolute;bottom:68px;left:12px;background:var(--surface2);border:1px solid var(--border);border-radius:16px;padding:12px;display:none;flex-wrap:wrap;width:260px;gap:4px;box-shadow:0 8px 32px rgba(0,0,0,0.5);z-index:200}
+#emoji-picker-main.open{display:flex}
+.ep-e{font-size:22px;cursor:pointer;padding:4px;border-radius:8px}
+.ep-e:active{background:var(--surface3)}
+
+/* PROFILE */
+#profile-banner{padding:28px 16px 20px;display:flex;flex-direction:column;align-items:center;gap:10px;border-bottom:1px solid var(--border);background:linear-gradient(180deg,var(--bg) 0%,var(--bg2) 100%);flex-shrink:0}
+.pav-wrap{position:relative;cursor:pointer}
+.pav-wrap img{width:84px;height:84px;border-radius:50%;object-fit:cover;border:2px solid var(--green);box-shadow:0 0 20px var(--green-glow)}
+.pav-edit{position:absolute;bottom:2px;right:2px;background:var(--green);border-radius:50%;width:24px;height:24px;display:flex;align-items:center;justify-content:center;font-size:12px}
+.p-name{font-size:18px;font-weight:700;color:var(--text)}
+.p-email{font-size:13px;color:var(--text2)}
+.p-section{padding:16px}
+.p-section h4{font-size:11px;color:var(--text3);margin-bottom:12px;text-transform:uppercase;letter-spacing:.8px;font-weight:600}
+.p-row{display:flex;align-items:center;padding:12px 0;border-bottom:1px solid var(--border)}
+.p-row span{flex:1;font-size:14px;color:var(--text)}
+.p-row button{padding:6px 14px;background:var(--surface3);border:none;border-radius:8px;color:var(--text2);font-size:12px;cursor:pointer;font-family:inherit;transition:all .15s}
+.p-row button:hover{background:var(--green-glow);color:var(--green)}
+
+/* MODAL */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.8);display:none;align-items:flex-end;justify-content:center;z-index:500;backdrop-filter:blur(4px)}
+@media(min-width:500px){.modal-overlay{align-items:center}}
+.modal-overlay.open{display:flex}
+.modal{background:var(--surface2);border-radius:20px 20px 0 0;padding:24px;width:100%;max-width:480px;border:1px solid var(--border);border-bottom:none}
+@media(min-width:500px){.modal{border-radius:16px;border-bottom:1px solid var(--border);max-width:360px}}
+.modal h3{color:var(--text);margin-bottom:8px;font-size:17px;font-weight:600}
+.modal p{font-size:14px;color:var(--text2);margin-bottom:16px;line-height:1.5}
+.modal input{width:100%;padding:12px 14px;border-radius:10px;border:1px solid var(--border);background:var(--surface3);color:var(--text);font-size:14px;outline:none;margin-bottom:12px;font-family:inherit}
+.modal input:focus{border-color:var(--green)}
+.mbtns{display:flex;gap:10px;justify-content:flex-end}
+.mbtns button{padding:9px 18px;border-radius:10px;border:none;cursor:pointer;font-size:14px;font-family:inherit;font-weight:500}
+.btn-c{background:var(--surface3);color:var(--text2)}
+.btn-ok{background:var(--green);color:white}
+.btn-d{background:var(--red);color:white}
+
+#toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--surface2);color:var(--text);padding:10px 20px;border-radius:20px;font-size:13px;border:1px solid var(--border);opacity:0;transition:all .3s;z-index:1000;pointer-events:none;white-space:nowrap;box-shadow:0 4px 20px rgba(0,0,0,0.3)}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+::-webkit-scrollbar{width:3px}
+::-webkit-scrollbar-thumb{background:var(--surface3);border-radius:2px}
+.secret-badge{font-size:10px;background:rgba(248,81,73,0.2);color:#f85149;padding:2px 6px;border-radius:10px;margin-left:4px}.ma-btn{background:var(--surface3);border:none;cursor:pointer;font-size:13px;padding:3px 8px;border-radius:8px;color:var(--text2)}.ma-btn:hover{background:var(--border)}
+@keyframes pulse-bg{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.1);opacity:.7}}
+@keyframes logo-pop{0%{transform:scale(0.5);opacity:0}80%{transform:scale(1.1)}100%{transform:scale(1);opacity:1}}
+@keyframes slide-in{0%{transform:translateX(40px);opacity:0}100%{transform:translateX(0);opacity:1}}
+.feat-pill{background:rgba(29,158,117,0.15);color:#1D9E75;border:1px solid rgba(29,158,117,0.3);border-radius:20px;padding:5px 14px;font-size:13px;font-weight:500}
+.demo-feat{display:flex;align-items:center;gap:14px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.06);border-radius:12px;padding:12px 14px;text-align:left;font-size:20px}
+.demo-feat div{display:flex;flex-direction:column}
+.demo-feat b{font-size:14px;color:#e6edf3;font-weight:600}
+.demo-feat span{font-size:12px;color:#8b949e;margin-top:2px}
+.demo-dot{width:8px;height:8px;border-radius:50%;background:#30363d;transition:all .3s}
+.demo-dot.active{width:24px;border-radius:4px;background:#1D9E75}
+.demo-slide{animation:slide-in .4s ease-out}
+</style>
+</head>
+<body>
+<div id="app">
+
+<!-- WELCOME -->
+
+<!-- SPLASH / DEMO SCREEN -->
+<div class="screen active" id="screen-splash">
+  <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0;background:linear-gradient(180deg,#0d1117 0%,#161b22 100%);overflow:hidden;position:relative">
+    
+    <!-- Animated background circles -->
+    <div style="position:absolute;width:300px;height:300px;border-radius:50%;background:rgba(29,158,117,0.06);top:-80px;right:-80px;animation:pulse-bg 3s ease-in-out infinite"></div>
+    <div style="position:absolute;width:200px;height:200px;border-radius:50%;background:rgba(29,158,117,0.04);bottom:-40px;left:-40px;animation:pulse-bg 3s ease-in-out infinite 1s"></div>
+    
+    <!-- Demo slides -->
+    <div id="demo-slides" style="width:100%;display:flex;flex-direction:column;align-items:center;gap:0">
+      
+      <!-- Slide 1: Logo + title -->
+      <div class="demo-slide active" id="slide-0" style="display:flex;flex-direction:column;align-items:center;gap:20px;padding:40px 28px;text-align:center">
+        <img src="data:image/jpeg;base64,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" style="width:100px;height:100px;border-radius:50%;border:3px solid #1D9E75;box-shadow:0 0 40px rgba(29,158,117,0.3);animation:logo-pop .6s ease-out"/>
+        <div>
+          <p style="font-size:36px;font-weight:800;color:#e6edf3;letter-spacing:-1px"><span style="color:#1D9E75">Lock</span>Talk</p>
+          <p style="font-size:15px;color:#8b949e;margin-top:6px">A nova forma de comunicar</p>
+        </div>
+        <div style="display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:8px">
+          <span class="feat-pill">💬 Mensagens</span>
+          <span class="feat-pill">📞 Chamadas</span>
+          <span class="feat-pill">📹 Vídeo</span>
+          <span class="feat-pill">🔐 Seguro</span>
+        </div>
+      </div>
+
+      <!-- Slide 2: Features -->
+      <div class="demo-slide" id="slide-1" style="display:none;flex-direction:column;align-items:center;gap:20px;padding:40px 28px;text-align:center;width:100%">
+        <p style="font-size:22px;font-weight:700;color:#e6edf3">Funcionalidades únicas</p>
+        <div style="display:flex;flex-direction:column;gap:12px;width:100%;max-width:320px">
+          <div class="demo-feat">🤖 <div><b>Chat com IA</b><span>Claude integrado nas conversas</span></div></div>
+          <div class="demo-feat">🔐 <div><b>Mensagens secretas</b><span>Protegidas por password</span></div></div>
+          <div class="demo-feat">🌐 <div><b>Tradução automática</b><span>Qualquer idioma, instantâneo</span></div></div>
+          <div class="demo-feat">📌 <div><b>Mensagens fixadas</b><span>Fixa o que é importante</span></div></div>
+        </div>
+      </div>
+
+      <!-- Slide 3: More features -->
+      <div class="demo-slide" id="slide-2" style="display:none;flex-direction:column;align-items:center;gap:20px;padding:40px 28px;text-align:center;width:100%">
+        <p style="font-size:22px;font-weight:700;color:#e6edf3">E muito mais...</p>
+        <div style="display:flex;flex-direction:column;gap:12px;width:100%;max-width:320px">
+          <div class="demo-feat">👥 <div><b>Grupos</b><span>Conversa com vários amigos</span></div></div>
+          <div class="demo-feat">📸 <div><b>Stories</b><span>Partilha momentos por 24h</span></div></div>
+          <div class="demo-feat">📊 <div><b>Enquetes</b><span>Vota com os teus contactos</span></div></div>
+          <div class="demo-feat">🎨 <div><b>Temas</b><span>Personaliza cada conversa</span></div></div>
+        </div>
+      </div>
+
+      <!-- Slide 4: CTA -->
+      <div class="demo-slide" id="slide-3" style="display:none;flex-direction:column;align-items:center;gap:24px;padding:40px 28px;text-align:center">
+        <img src="data:image/jpeg;base64,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" style="width:80px;height:80px;border-radius:50%;border:2px solid #1D9E75"/>
+        <div>
+          <p style="font-size:24px;font-weight:700;color:#e6edf3">Pronto para começar?</p>
+          <p style="font-size:14px;color:#8b949e;margin-top:6px">Entra com a tua conta Google<br>em menos de 10 segundos</p>
+        </div>
+        <button onclick="skipToLogin()" style="background:#1D9E75;color:white;border:none;border-radius:14px;padding:16px 40px;font-size:16px;font-weight:700;cursor:pointer;font-family:inherit;width:100%;max-width:280px;transition:all .2s">Entrar agora →</button>
+        <button onclick="skipToLogin()" style="background:none;border:none;color:#8b949e;font-size:13px;cursor:pointer;font-family:inherit">Saltar introdução</button>
+      </div>
+
+    </div>
+
+    <!-- Progress dots -->
+    <div style="display:flex;gap:8px;margin-bottom:30px">
+      <div class="demo-dot active" id="dot-0"></div>
+      <div class="demo-dot" id="dot-1"></div>
+      <div class="demo-dot" id="dot-2"></div>
+      <div class="demo-dot" id="dot-3"></div>
+    </div>
+
+    <!-- Skip button -->
+    <button id="skip-btn" onclick="skipToLogin()" style="position:absolute;top:16px;right:16px;background:rgba(255,255,255,.1);border:none;color:#8b949e;font-size:12px;cursor:pointer;font-family:inherit;padding:6px 14px;border-radius:20px">Saltar</button>
+
+  </div>
+</div>
+
+<div class="screen" id="screen-welcome">
+  <img class="auth-logo" src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAA0JCgsKCA0LCgsODg0PEyAVExISEyccHhcgLikxMC4pLSwzOko+MzZGNywtQFdBRkxOUlNSMj5aYVpQYEpRUk//2wBDAQ4ODhMREyYVFSZPNS01T09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT0//wAARCABQAFADASIAAhEBAxEB/8QAHwAAAQUBAQEBAQEAAAAAAAAAAAECAwQFBgcICQoL/8QAtRAAAgEDAwIEAwUFBAQAAAF9AQIDAAQRBRIhMUEGE1FhByJxFDKBkaEII0KxwRVS0fAkM2JyggkKFhcYGRolJicoKSo0NTY3ODk6Q0RFRkdISUpTVFVWV1hZWmNkZWZnaGlqc3R1dnd4eXqDhIWGh4iJipKTlJWWl5iZmqKjpKWmp6ipqrKztLW2t7i5usLDxMXGx8jJytLT1NXW19jZ2uHi4+Tl5ufo6erx8vP09fb3+Pn6/8QAHwEAAwEBAQEBAQEBAQAAAAAAAAECAwQFBgcICQoL/8QAtREAAgECBAQDBAcFBAQAAQJ3AAECAxEEBSExBhJBUQdhcRMiMoEIFEKRobHBCSMzUvAVYnLRChYkNOEl8RcYGRomJygpKjU2Nzg5OkNERUZHSElKU1RVVldYWVpjZGVmZ2hpanN0dXZ3eHl6goOEhYaHiImKkpOUlZaXmJmaoqOkpaanqKmqsrO0tba3uLm6wsPExcbHyMnK0tPU1dbX2Nna4uPk5ebn6Onq8vP09fb3+Pn6/9oADAMBAAIRAxEAPwDoAKXFIKeBWhiIBTwtKq1Iq0hjNtG2kmurW3m8mWYmf/njEjSSD6qoOPxxTTewKCZYL+FR/HJaNtH1xnFIV0uo/bTStTRmKaETW8sc0TdHjbcD/n0pCtAyAikxUpWmEUwGCpFFMHWpUFAIeoqtf3DpJHZ28hillUySSjrDEDjI/wBpjwPTk1dQVirIk2uaiskojAMSB2BICiPIH5sal7GGKqulSbjuRtMYMWdkY7WPY00sjZKxxr9527u3IHPUmq8N2+/Nnd3jzBDIsV1AsXnKBk7GU8NjnBqxp+jprt1ftcXc9vDAq25WEgFwQHO4kHjp+VGkWGk61dstprGsedbgyRtJsXKnK7l+Xkc4/GlGKtqcdDDc9OMppNy3vv8AIljmJ/4mFgoM7qHZBwt0mM7WH97HRuueK143iuII54G3RSoHRvUGsHS08iKW2edVawkeFWwf3mw4H0JGK0fDz79LdQMLFdTog9F35A/U0RvsXgKk7ypT6FthUbCp2FRMKo9EiXrUyVCvWpkpsSJl6Vy2oE2esmZjiK4Ajc/3XH3T+I4+orqUrH8S2gfSryRELyGBwqqMlj24788/hSMcTSVWm4sj0HV7LSr2/i1CZYFuHSWJ3+6wChSM+vH60mg3Xh7RLnULgaxYv9plLRhODHHyQg/PoKxHe+kA/wBHgjUDHlzSYc+5wCF+h5qNVvWPFpbRnszzqR+mTTS0OGlXqwgouO3mi39uCQ3V55bg3VzJLDGR8zbm+UY9TxXSeH7ZrXSo4nOXGS5HdycsfzOPwrF0nSJprlbi5cyyDgOV2qg77B1z/tH8MV1axrFGEUYAFK1jfCUHGUqkt2RvUDVO9QNQdxCKlQ1ADUqGqJRZV1DiLadxiMm7Po2MYplzHBckWsk0Ylz9zdhs/wCPtVWaWZLpJrdoQyxGNlmRyD82c/KPpTSHeQxhwY2m84jYwcnOSB2xnueQKjUwlOpqkr6/gTiCwtopUUwu8KFjEDySO1QavNHpdtJc2thFdLChknHn7DEMAjsc9/ypyNKtrNah4/LZGVSY33gk55xx36jOeKivbQzaPqGnxvgTxlYmkRsoxxncQOQcDnrTV76ihKq5K60/L+u/4E9vrVpDHFHqTW2n3UuGSEzb8qcbSWAwM89fSo11ovqf2NraNVN9NaeZ5h4CRht3pn17Vma3pl9qCtAl4FgNukSo5kUKy9W2qMMD/tdPSm3uhC+eRJrhhDJeTXDeWrB9rxhQBkYzkcjpjvTOq5vRXEN1bpPbTJLE+drpnBwcd/ekY1DYiVLCCO4MTTRoEdolKq2OAQCBjgDI6VIxoEQjrTwajpQaZKJlapA1VwacDSKuWQ1Lvqvupd1AXJWamFqjLUhNAXHFqYTSE0maBH//2Q==" alt="LockTalk"/>
+  <p class="auth-title"><span>Lock</span>Talk</p>
+  <p class="auth-sub">Mensagens seguras e em tempo real.<br>Entra com a tua conta Google.</p>
+  <button class="google-btn" id="google-btn" onclick="doGoogleLogin()">
+    <svg class="google-icon" viewBox="0 0 24 24">
+      <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+      <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+      <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+      <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+    </svg>
+    Entrar com Google
+  </button>
+  <p class="auth-error" id="welcome-error"></p>
+</div>
+
+<!-- PROFILE SETUP (first time) -->
+<div class="screen" id="screen-setup">
+  <div class="setup-av" onclick="document.getElementById('setup-av-input').click()">
+    <img id="setup-av-img" src="data:image/jpeg;base64,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" alt="foto"/>
+    <div class="setup-av-edit">📷</div>
+  </div>
+  <input type="file" id="setup-av-input" accept="image/*" style="display:none" onchange="previewSetupAv(this)"/>
+  <p class="auth-title" style="font-size:22px">Escolhe o teu nome</p>
+  <p class="auth-sub">Como queres ser conhecido no LockTalk?</p>
+  <div class="setup-form">
+    <input class="setup-input" id="setup-username" type="text" placeholder="Nome de utilizador..." maxlength="20"/>
+    <button class="setup-btn" id="setup-btn" onclick="saveProfile()">Entrar no LockTalk</button>
+    <p class="setup-error" id="setup-error"></p>
+  </div>
+</div>
+
+<!-- MAIN -->
+<div class="screen" id="screen-main">
+  <div id="main-header">
+    <img src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAA0JCgsKCA0LCgsODg0PEyAVExISEyccHhcgLikxMC4pLSwzOko+MzZGNywtQFdBRkxOUlNSMj5aYVpQYEpRUk//2wBDAQ4ODhMREyYVFSZPNS01T09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT0//wAARCABQAFADASIAAhEBAxEB/8QAHwAAAQUBAQEBAQEAAAAAAAAAAAECAwQFBgcICQoL/8QAtRAAAgEDAwIEAwUFBAQAAAF9AQIDAAQRBRIhMUEGE1FhByJxFDKBkaEII0KxwRVS0fAkM2JyggkKFhcYGRolJicoKSo0NTY3ODk6Q0RFRkdISUpTVFVWV1hZWmNkZWZnaGlqc3R1dnd4eXqDhIWGh4iJipKTlJWWl5iZmqKjpKWmp6ipqrKztLW2t7i5usLDxMXGx8jJytLT1NXW19jZ2uHi4+Tl5ufo6erx8vP09fb3+Pn6/8QAHwEAAwEBAQEBAQEBAQAAAAAAAAECAwQFBgcICQoL/8QAtREAAgECBAQDBAcFBAQAAQJ3AAECAxEEBSExBhJBUQdhcRMiMoEIFEKRobHBCSMzUvAVYnLRChYkNOEl8RcYGRomJygpKjU2Nzg5OkNERUZHSElKU1RVVldYWVpjZGVmZ2hpanN0dXZ3eHl6goOEhYaHiImKkpOUlZaXmJmaoqOkpaanqKmqsrO0tba3uLm6wsPExcbHyMnK0tPU1dbX2Nna4uPk5ebn6Onq8vP09fb3+Pn6/9oADAMBAAIRAxEAPwDoAKXFIKeBWhiIBTwtKq1Iq0hjNtG2kmurW3m8mWYmf/njEjSSD6qoOPxxTTewKCZYL+FR/HJaNtH1xnFIV0uo/bTStTRmKaETW8sc0TdHjbcD/n0pCtAyAikxUpWmEUwGCpFFMHWpUFAIeoqtf3DpJHZ28hillUySSjrDEDjI/wBpjwPTk1dQVirIk2uaiskojAMSB2BICiPIH5sal7GGKqulSbjuRtMYMWdkY7WPY00sjZKxxr9527u3IHPUmq8N2+/Nnd3jzBDIsV1AsXnKBk7GU8NjnBqxp+jprt1ftcXc9vDAq25WEgFwQHO4kHjp+VGkWGk61dstprGsedbgyRtJsXKnK7l+Xkc4/GlGKtqcdDDc9OMppNy3vv8AIljmJ/4mFgoM7qHZBwt0mM7WH97HRuueK143iuII54G3RSoHRvUGsHS08iKW2edVawkeFWwf3mw4H0JGK0fDz79LdQMLFdTog9F35A/U0RvsXgKk7ypT6FthUbCp2FRMKo9EiXrUyVCvWpkpsSJl6Vy2oE2esmZjiK4Ajc/3XH3T+I4+orqUrH8S2gfSryRELyGBwqqMlj24788/hSMcTSVWm4sj0HV7LSr2/i1CZYFuHSWJ3+6wChSM+vH60mg3Xh7RLnULgaxYv9plLRhODHHyQg/PoKxHe+kA/wBHgjUDHlzSYc+5wCF+h5qNVvWPFpbRnszzqR+mTTS0OGlXqwgouO3mi39uCQ3V55bg3VzJLDGR8zbm+UY9TxXSeH7ZrXSo4nOXGS5HdycsfzOPwrF0nSJprlbi5cyyDgOV2qg77B1z/tH8MV1axrFGEUYAFK1jfCUHGUqkt2RvUDVO9QNQdxCKlQ1ADUqGqJRZV1DiLadxiMm7Po2MYplzHBckWsk0Ylz9zdhs/wCPtVWaWZLpJrdoQyxGNlmRyD82c/KPpTSHeQxhwY2m84jYwcnOSB2xnueQKjUwlOpqkr6/gTiCwtopUUwu8KFjEDySO1QavNHpdtJc2thFdLChknHn7DEMAjsc9/ypyNKtrNah4/LZGVSY33gk55xx36jOeKivbQzaPqGnxvgTxlYmkRsoxxncQOQcDnrTV76ihKq5K60/L+u/4E9vrVpDHFHqTW2n3UuGSEzb8qcbSWAwM89fSo11ovqf2NraNVN9NaeZ5h4CRht3pn17Vma3pl9qCtAl4FgNukSo5kUKy9W2qMMD/tdPSm3uhC+eRJrhhDJeTXDeWrB9rxhQBkYzkcjpjvTOq5vRXEN1bpPbTJLE+drpnBwcd/ekY1DYiVLCCO4MTTRoEdolKq2OAQCBjgDI6VIxoEQjrTwajpQaZKJlapA1VwacDSKuWQ1Lvqvupd1AXJWamFqjLUhNAXHFqYTSE0maBH//2Q==" id="main-logo" alt="LockTalk"/>
+    <span id="main-title-text"><span>Lock</span>Talk</span>
+    <button class="hbtn" onclick="toggleSearch()" title="Pesquisar">🔍</button>
+    <button class="hbtn" onclick="showScreen('screen-settings')" title="Definições">⚙️</button>
+    <img id="my-av-thumb" style="width:32px;height:32px;border-radius:50%;object-fit:cover;border:2px solid var(--green);cursor:pointer;flex-shrink:0" src="data:image/jpeg;base64,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" onclick="showScreen('screen-profile')"/>
+  </div>
+  <div id="search-bar" style="display:none;padding:8px 14px;border-bottom:1px solid var(--border);background:var(--bg2)">
+    <input id="search-input" style="width:100%;padding:9px 14px;border-radius:20px;border:1px solid var(--border);background:var(--surface2);color:var(--text);font-size:14px;outline:none;font-family:inherit" placeholder="Pesquisar mensagens..." oninput="searchMessages(this.value)"/>
+  </div>
+  <div id="search-results" style="display:none;background:var(--surface);max-height:250px;overflow-y:auto;border-bottom:1px solid var(--border)"></div>
+  <div id="stories-bar" style="padding:12px 16px;border-bottom:1px solid var(--border);display:flex;gap:12px;overflow-x:auto;flex-shrink:0;background:var(--bg2)">
+    <div style="display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;flex-shrink:0" onclick="showModal('add-story-modal')">
+      <div style="width:54px;height:54px;border-radius:50%;padding:2px;background:var(--green);display:flex;align-items:center;justify-content:center;font-size:22px;color:white">+</div>
+      <span style="font-size:10px;color:var(--text2)">O meu estado</span>
+    </div>
+  </div>
+  <div class="tabs">
+    <div class="tab active" onclick="switchTab('chats')">💬 Chats</div>
+    <div class="tab" onclick="switchTab('groups')">👥 Grupos</div>
+    <div class="tab" onclick="switchTab('contacts')">🔍 Contactos</div>
+  </div>
+  <div id="tab-chats" class="tab-content active">
+    <div id="chats-list" class="list-area"><div class="list-empty"><span class="list-empty-icon">💬</span>Sem conversas.<br>Adiciona um contacto!</div></div>
+  </div>
+  <div id="tab-groups" class="tab-content">
+    <div style="padding:10px 16px;border-bottom:1px solid var(--border);display:flex;gap:8px;background:var(--bg2);flex-shrink:0">
+      <button onclick="showModal('create-group-modal')" style="flex:1;padding:10px;background:var(--green);color:white;border:none;border-radius:10px;font-size:14px;cursor:pointer;font-weight:500">+ Criar grupo</button>
+    </div>
+    <div id="groups-list" class="list-area"><div class="list-empty"><span class="list-empty-icon">👥</span>Sem grupos.<br>Cria um novo grupo!</div></div>
+  </div>
+  <div id="tab-contacts" class="tab-content">
+    <div class="add-bar">
+      <input id="add-contact-input" placeholder="Nome de utilizador..." maxlength="20"/>
+      <button onclick="addContact()">Adicionar</button>
+    </div>
+    <div id="contacts-list" class="list-area"><div class="list-empty"><span class="list-empty-icon">👥</span>Sem contactos.<br>Adiciona pelo nome!</div></div>
+  </div>
+</div>
+
+<!-- CHAT -->
+<div class="screen" id="screen-chat">
+  <div id="chat-header">
+    <button id="back-btn" onclick="goBackFromChat()">&#8592;</button>
+    <div id="chat-peer-av-wrap" class="av-wrap" style="flex-shrink:0;cursor:pointer" onclick="viewContactPhoto()"></div>
+    <div style="flex:1;min-width:0">
+      <p id="chat-peer-name" style="cursor:pointer" onclick="openRenameContact()"></p>
+      <span id="chat-peer-sub">online</span>
+    </div>
+    <button class="hbtn" onclick="startCall('audio')">📞</button>
+    <button class="hbtn" onclick="startCall('video')">📹</button>
+    <button class="hbtn" onclick="toggleAIMode()" id="ai-btn">🤖</button>
+    <button class="hbtn" onclick="showModal('poll-modal')">📊</button>
+    <button class="hbtn" onclick="toggleThemeBar()">🎨</button>
+    <button class="hbtn" onclick="showModal('delete-modal')">🗑️</button>
+  </div>
+  <div id="theme-bar" style="display:none;padding:10px 14px;border-bottom:1px solid var(--border);gap:8px;align-items:center;background:var(--bg2);flex-shrink:0;overflow-x:auto"><span style="font-size:12px;color:var(--text2);flex-shrink:0">Tema:</span><div style="width:26px;height:26px;border-radius:50%;background:#1D9E75;cursor:pointer;border:2px solid white;flex-shrink:0" onclick="setTheme('#1D9E75','#0d1117','#21262d')"></div><div style="width:26px;height:26px;border-radius:50%;background:#3498db;cursor:pointer;flex-shrink:0" onclick="setTheme('#3498db','#0a1628','#1a2744')"></div><div style="width:26px;height:26px;border-radius:50%;background:#9b59b6;cursor:pointer;flex-shrink:0" onclick="setTheme('#9b59b6','#1a0d2e','#2d1b4e')"></div><div style="width:26px;height:26px;border-radius:50%;background:#e74c3c;cursor:pointer;flex-shrink:0" onclick="setTheme('#e74c3c','#2e0d0d','#4e1a1a')"></div><div style="width:26px;height:26px;border-radius:50%;background:#f39c12;cursor:pointer;flex-shrink:0" onclick="setTheme('#f39c12','#2e1f0d','#4e351a')"></div><div style="width:26px;height:26px;border-radius:50%;background:#e91e8c;cursor:pointer;flex-shrink:0" onclick="setTheme('#e91e8c','#2e0d1e','#4e1a35')"></div></div>
+  <div id="pinned-bar" style="display:none;padding:8px 14px;border-bottom:1px solid var(--border);background:var(--bg2);flex-shrink:0;cursor:pointer" onclick="scrollToPinned()">
+    <div style="display:flex;align-items:center;gap:8px">
+      <span style="font-size:14px">📌</span>
+      <div style="flex:1;min-width:0">
+        <div style="font-size:11px;color:var(--green);font-weight:600">Mensagem fixada</div>
+        <div id="pinned-text" style="font-size:13px;color:var(--text2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis"></div>
+      </div>
+      <button onclick="event.stopPropagation();unpinMessage()" style="background:none;border:none;cursor:pointer;color:var(--text3);font-size:16px">✕</button>
+    </div>
+  </div>
+  <div id="messages"></div>
+  <div id="ai-mode-bar" style="display:none;padding:6px 14px;background:linear-gradient(90deg,#1a0d2e,#2d1b4e);flex-shrink:0;font-size:12px;color:#b898d8;text-align:center">🤖 Modo IA ativo — Claude responde automaticamente</div>
+  <div class="typing-row" id="typing-row"></div>
   <div id="emoji-picker-main"></div>
   <div id="input-area">
     <button class="iab" onclick="document.getElementById('img-input').click()">📎</button>
@@ -450,28 +914,6 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-seri
     <div class="mbtns" style="margin-top:10px"><button class="btn-c" onclick="hideModal('gif-modal')">Fechar</button></div>
   </div>
 </div>
-
-<div class="modal-overlay" id="wallpaper-modal">
-  <div class="modal">
-    <h3>🖼️ Wallpaper</h3>
-    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px">
-      <div onclick="setWallpaper('none')" style="height:54px;background:var(--bg);border-radius:8px;cursor:pointer;border:2px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--text2)">Nenhum</div>
-      <div onclick="setWallpaper('g1')" style="height:54px;background:linear-gradient(135deg,#1a1a2e,#0f3460);border-radius:8px;cursor:pointer;border:2px solid var(--border)"></div>
-      <div onclick="setWallpaper('g2')" style="height:54px;background:linear-gradient(135deg,#0d2137,#0d5c63);border-radius:8px;cursor:pointer;border:2px solid var(--border)"></div>
-      <div onclick="setWallpaper('g3')" style="height:54px;background:linear-gradient(135deg,#1a0533,#3d0066);border-radius:8px;cursor:pointer;border:2px solid var(--border)"></div>
-      <div onclick="setWallpaper('g4')" style="height:54px;background:linear-gradient(135deg,#0d1f0d,#1a3a1a);border-radius:8px;cursor:pointer;border:2px solid var(--border)"></div>
-      <div onclick="setWallpaper('dots')" style="height:54px;border-radius:8px;cursor:pointer;border:2px solid var(--border);background:#0d1117;background-image:radial-gradient(circle,#30363d 1px,transparent 1px);background-size:20px 20px"></div>
-    </div>
-    <div class="mbtns"><button class="btn-c" onclick="hideModal('wallpaper-modal')">Fechar</button></div>
-  </div>
-</div>
-<div class="modal-overlay" id="stats-modal">
-  <div class="modal">
-    <h3>📊 Estatísticas</h3>
-    <div id="stats-content" style="font-size:14px;color:var(--text2);line-height:2.2"></div>
-    <div class="mbtns"><button class="btn-c" onclick="hideModal('stats-modal')">Fechar</button></div>
-  </div>
-</div>
 <div class="modal-overlay" id="delete-modal">
   <div class="modal">
     <h3>Apagar conversa?</h3>
@@ -494,7 +936,22 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-seri
   </div>
 </div>
 
-<div class="modal-overlay" id="secret-msg-modal"><div class="modal"><h3>🔐 Mensagem secreta</h3><p>O destinatário precisa de uma password para ler.</p><input id="secret-msg-text" placeholder="A tua mensagem..."/><input id="secret-msg-pass" type="password" placeholder="Password para abrir..."/><div class="mbtns"><button class="btn-c" onclick="hideModal('secret-msg-modal')">Cancelar</button><button class="btn-ok" onclick="sendSecretMsg()">Enviar 🔐</button></div></div></div><div class="modal-overlay" id="unlock-secret-modal"><div class="modal"><h3>🔐 Mensagem protegida</h3><p>Introduz a password para ler.</p><input id="unlock-pass-input" type="password" placeholder="Password..."/><p id="unlock-error" style="font-size:12px;color:#f85149;min-height:16px"></p><div class="mbtns"><button class="btn-c" onclick="hideModal('unlock-secret-modal')">Cancelar</button><button class="btn-ok" onclick="unlockSecret()">Abrir</button></div></div></div><div class="modal-overlay" id="forward-modal"><div class="modal"><h3>↪️ Reencaminhar</h3><p>Escolhe para quem enviar:</p><div id="forward-contacts" style="max-height:200px;overflow-y:auto;margin-bottom:10px"></div><div class="mbtns"><button class="btn-c" onclick="hideModal('forward-modal')">Cancelar</button><button class="btn-ok" onclick="doForward()">Reencaminhar</button></div></div></div><div id="toast"></div>
+<div class="modal-overlay" id="secret-msg-modal"><div class="modal"><h3>🔐 Mensagem secreta</h3><p>O destinatário precisa de uma password para ler.</p><input id="secret-msg-text" placeholder="A tua mensagem..."/><input id="secret-msg-pass" type="password" placeholder="Password para abrir..."/><div class="mbtns"><button class="btn-c" onclick="hideModal('secret-msg-modal')">Cancelar</button><button class="btn-ok" onclick="sendSecretMsg()">Enviar 🔐</button></div></div></div><div class="modal-overlay" id="unlock-secret-modal"><div class="modal"><h3>🔐 Mensagem protegida</h3><p>Introduz a password para ler.</p><input id="unlock-pass-input" type="password" placeholder="Password..."/><p id="unlock-error" style="font-size:12px;color:#f85149;min-height:16px"></p><div class="mbtns"><button class="btn-c" onclick="hideModal('unlock-secret-modal')">Cancelar</button><button class="btn-ok" onclick="unlockSecret()">Abrir</button></div></div></div><div class="modal-overlay" id="forward-modal"><div class="modal"><h3>↪️ Reencaminhar</h3><p>Escolhe para quem enviar:</p><div id="forward-contacts" style="max-height:200px;overflow-y:auto;margin-bottom:10px"></div><div class="mbtns"><button class="btn-c" onclick="hideModal('forward-modal')">Cancelar</button><button class="btn-ok" onclick="doForward()">Reencaminhar</button></div></div></div>
+<div id="photo-viewer" style="position:fixed;inset:0;background:rgba(0,0,0,.95);display:none;align-items:center;justify-content:center;z-index:600;cursor:pointer" onclick="this.style.display='none'">
+  <img id="photo-viewer-img" style="max-width:90%;max-height:90%;border-radius:16px;object-fit:contain"/>
+</div>
+<div class="modal-overlay" id="rename-contact-modal">
+  <div class="modal">
+    <h3>✏️ Mudar nome do contacto</h3>
+    <p>Este nome só é visível para ti.</p>
+    <input id="rename-contact-input" placeholder="Novo nome..." maxlength="30"/>
+    <div class="mbtns">
+      <button class="btn-c" onclick="hideModal('rename-contact-modal')">Cancelar</button>
+      <button class="btn-ok" onclick="saveContactRename()">Guardar</button>
+    </div>
+  </div>
+</div>
+<div id="toast"></div>
 
 <script type="module">
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js';
@@ -543,6 +1000,28 @@ onAuthStateChanged(auth,async user=>{
   }
 });
 
+
+
+// DEMO / SPLASH
+let demoSlide=0;
+const demoTimer=setInterval(()=>{
+  if(demoSlide<3){demoSlide++;showDemoSlide(demoSlide);}
+  else{clearInterval(demoTimer);}
+},3000);
+
+function showDemoSlide(n){
+  for(let i=0;i<4;i++){
+    const s=document.getElementById('slide-'+i);const d=document.getElementById('dot-'+i);
+    if(s)s.style.display=i===n?'flex':'none';
+    if(d)d.classList.toggle('active',i===n);
+  }
+}
+
+window.skipToLogin=function(){
+  clearInterval(demoTimer);
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById('screen-welcome').classList.add('active');
+};
 
 window.setAppTheme=function(mode){
   document.body.classList.toggle('light',mode==='light');
@@ -686,12 +1165,11 @@ window.switchTab=function(t){
 
 function openChat(peer){
   currentPeer=peer;unread[peer.id]=0;
-  $('chat-peer-name').textContent='@'+peer.username;
+  var _dn=getContactDisplayName(peer.id,peer.username);$('chat-peer-name').textContent=_dn||('@'+peer.username);
   $('chat-peer-sub').textContent=peer.online?'🟢 online':'⚪ offline';
   const w=$('chat-peer-av-wrap');w.innerHTML='';w.appendChild(renderAv(peer.avatar,peer.username,36,peer.online));
   $('messages').innerHTML='';
   $('ai-mode-bar').style.display='none';aiMode=false;
-  loadWallpaper(peer.id);
   showScreen('screen-chat');
   const chatId=cid(myUid,peer.id);
   if(msgListener)msgListener();
@@ -726,8 +1204,7 @@ function addBubble(m,chatId){
   const isText=m.type==='text'||!m.type;
   const actBtns=isText?`<div style="display:flex;gap:4px;margin-top:3px"><button class="ma-btn" onclick="(async function(btn){btn.textContent='⏳';const bubble=btn.closest('.msg').querySelector('.bubble');const t=bubble?.childNodes[0]?.textContent?.trim();if(!t)return;const tr=await translateText(t);btn.textContent='🌐';if(tr&&tr!==t){let el=bubble.querySelector('.tr');if(!el){el=document.createElement('div');el.className='tr';el.style='font-size:12px;color:var(--text2);margin-top:4px;font-style:italic';bubble.appendChild(el);}el.textContent='🌐 '+tr;toast('Traduzido!');}else toast('Sem tradução');})(this)">🌐</button><button class="ma-btn" onclick="startForward('${(m.text||'').replace(/'/g,'&apos;')}')">↪️</button></div>`:'';
   div.innerHTML=`${content}${rxns}<div class="msg-meta">${gt(m.ts)}${tick}</div>${actBtns}`;
-  div.querySelector('.bubble')?.addEventListener('dblclick',e=>{showRxnPicker(div,m.fbKey,chatId);floatEmoji('❤️',div);});
-  if(m.type==='text'&&!isMe){div.querySelector('.bubble')?.addEventListener('contextmenu',e=>{e.preventDefault();setReply(m.fbKey,m.text,currentPeer?.username||'');});}
+  div.querySelector('.bubble')?.addEventListener('dblclick',()=>showRxnPicker(div,m.fbKey,chatId));
   if(m.type==='text'&&isMe){
     div.querySelector('.bubble')?.addEventListener('contextmenu',e=>{e.preventDefault();pinMessage(m.fbKey,m.text,chatId);});
   }
@@ -801,10 +1278,7 @@ window.sendMsg=async function(){
   const text=$('msg-input').value.trim();if(!text||!currentPeer)return;
   $('msg-input').value='';$('msg-input').style.height='auto';
   const chatId=currentPeer.isGroup?'group_'+currentPeer.group.id:cid(myUid,currentPeer.id);
-  const md={from:myUid,fromName:myUsername,type:'text',text,ts:Date.now()};
-  if(replyTo){md.replyTo=replyTo.fbKey;md.replyText=replyTo.text;md.replyFrom=replyTo.fromName||currentPeer?.username||'';}
-  const dr=await push(ref(db,'messages/'+chatId),md);
-  cancelReply();
+  const dr=await push(ref(db,'messages/'+chatId),{from:myUid,fromName:myUsername,type:'text',text,ts:Date.now()});
   await update(dr,{fbKey:dr.key});
   if(!currentPeer.isGroup)set(ref(db,'typing/'+chatId+'/'+myUid),false);
   if(aiMode&&!currentPeer.isGroup){
@@ -971,7 +1445,7 @@ window.closeStory=function(){$('story-viewer').style.display='none';};
 
 // CALLS (WebRTC)
 let localStream=null,peerConn=null,callTimerInt=null,callSecs=0,callType='audio',incomingData=null,callList=null;
-const ICE={iceServers:[{urls:'stun:stun.l.google.com:19302'},{urls:'stun:stun1.l.google.com:19302'},{urls:'stun:stun2.l.google.com:19302'}]};let candListener=null;
+const ICE={iceServers:[{urls:'stun:stun.l.google.com:19302'},{urls:'stun:stun1.l.google.com:19302'}]};
 
 window.startCall=async function(type){
   if(!currentPeer){toast('Seleciona um contacto primeiro');return;}
@@ -983,21 +1457,18 @@ window.startCall=async function(type){
     else $('call-video-local').style.display='block';
     peerConn=new RTCPeerConnection(ICE);
     localStream.getTracks().forEach(t=>peerConn.addTrack(t,localStream));
-    peerConn.ontrack=e=>{const rv=$('call-video-remote');if(rv)rv.srcObject=e.streams[0];};
-    peerConn.onicecandidate=async e=>{if(e.candidate)await push(ref(db,'calls/'+currentPeer.id+'/cands'),{c:JSON.stringify(e.candidate.toJSON()),from:myUid,ts:Date.now()});};
-    peerConn.onconnectionstatechange=()=>{const s=peerConn.connectionState;if(s==='connected'){const st=$('call-status-txt');if(st)st.style.display='none';const ti=$('call-timer-txt');if(ti)ti.style.display='block';startCallTimer();}if(s==='disconnected'||s==='failed')endCall();};
-    if(candListener)candListener();
-    candListener=onValue(ref(db,'calls/'+myUid+'/cands'),async snap=>{const cands=snap.val();if(!cands||!peerConn)return;for(const [k,v] of Object.entries(cands)){if(v.from!==myUid){try{await peerConn.addIceCandidate(new RTCIceCandidate(JSON.parse(v.c)));}catch(e){}remove(ref(db,'calls/'+myUid+'/cands/'+k));}}});
+    peerConn.ontrack=e=>{$('call-video-remote').srcObject=e.streams[0];};
+    peerConn.onicecandidate=async e=>{if(e.candidate)await push(ref(db,'calls/'+currentPeer.id+'/cands'),{c:e.candidate.toJSON(),from:myUid});};
     const offer=await peerConn.createOffer();
     await peerConn.setLocalDescription(offer);
-    await set(ref(db,'calls/'+currentPeer.id+'/offer'),{sdp:JSON.stringify(offer),from:myUid,name:myUsername,av:myAvatar||'',type,ts:Date.now()});
+    await set(ref(db,'calls/'+currentPeer.id+'/offer'),{sdp:offer,from:myUid,name:myUsername,av:myAvatar||'',type,ts:Date.now()});
     $('call-peer-name').textContent='@'+currentPeer.username;
     $('call-status-txt').textContent=type==='video'?'📹 A chamar...':'📞 A chamar...';
     $('call-timer-txt').style.display='none';
     $('call-screen').style.display='flex';
     onValue(ref(db,'calls/'+myUid+'/answer'),async snap=>{
       const ans=snap.val();if(!ans||!peerConn)return;
-      try{await peerConn.setRemoteDescription(new RTCSessionDescription(JSON.parse(ans.sdp)));}catch(e){console.error('SDP parse err',e);}
+      await peerConn.setRemoteDescription(new RTCSessionDescription(ans.sdp));
       $('call-status-txt').style.display='none';$('call-timer-txt').style.display='block';
       startCallTimer();remove(ref(db,'calls/'+myUid+'/answer'));
     },{onlyOnce:true});
@@ -1024,15 +1495,12 @@ window.acceptCall=async function(){
     if(callType!=='video')$('call-video-local').style.display='none';else $('call-video-local').style.display='block';
     peerConn=new RTCPeerConnection(ICE);
     localStream.getTracks().forEach(t=>peerConn.addTrack(t,localStream));
-    peerConn.ontrack=e=>{const rv=$('call-video-remote');if(rv)rv.srcObject=e.streams[0];};
-    peerConn.onicecandidate=async e=>{if(e.candidate)await push(ref(db,'calls/'+incomingData.from+'/cands'),{c:JSON.stringify(e.candidate.toJSON()),from:myUid,ts:Date.now()});};
-    peerConn.onconnectionstatechange=()=>{const s=peerConn.connectionState;if(s==='connected'){const st=$('call-status-txt');if(st)st.style.display='none';const ti=$('call-timer-txt');if(ti)ti.style.display='block';startCallTimer();}if(s==='disconnected'||s==='failed')endCall();};
-    if(candListener)candListener();
-    candListener=onValue(ref(db,'calls/'+myUid+'/cands'),async snap=>{const cands=snap.val();if(!cands||!peerConn)return;for(const [k,v] of Object.entries(cands)){if(v.from!==myUid){try{await peerConn.addIceCandidate(new RTCIceCandidate(JSON.parse(v.c)));}catch(e){}remove(ref(db,'calls/'+myUid+'/cands/'+k));}}});
-    await peerConn.setRemoteDescription(new RTCSessionDescription(JSON.parse(incomingData.sdp)));
+    peerConn.ontrack=e=>{$('call-video-remote').srcObject=e.streams[0];};
+    peerConn.onicecandidate=async e=>{if(e.candidate)await push(ref(db,'calls/'+incomingData.from+'/cands'),{c:e.candidate.toJSON(),from:myUid});};
+    await peerConn.setRemoteDescription(new RTCSessionDescription(incomingData.sdp));
     const answer=await peerConn.createAnswer();
     await peerConn.setLocalDescription(answer);
-    await set(ref(db,'calls/'+incomingData.from+'/answer'),{sdp:JSON.stringify(answer),from:myUid});
+    await set(ref(db,'calls/'+incomingData.from+'/answer'),{sdp:answer,from:myUid});
     await remove(ref(db,'calls/'+myUid+'/offer'));
     $('call-peer-name').textContent='@'+(incomingData.name||'');
     $('call-status-txt').style.display='none';$('call-timer-txt').style.display='block';
@@ -1044,9 +1512,7 @@ window.endCall=function(){
   if(localStream)localStream.getTracks().forEach(t=>t.stop());
   if(peerConn)peerConn.close();if(callTimerInt)clearInterval(callTimerInt);
   $('call-screen').style.display='none';callSecs=0;localStream=null;peerConn=null;
-  if(candListener){candListener();candListener=null;}
-  if(myUid){remove(ref(db,'calls/'+myUid+'/offer'));remove(ref(db,'calls/'+myUid+'/answer'));remove(ref(db,'calls/'+myUid+'/cands'));}
-  toast('📵 Chamada terminada');
+  if(myUid)remove(ref(db,'calls/'+myUid));toast('📵 Chamada terminada');
 };
 let muted=false,camOff=false;
 window.toggleMute=function(){muted=!muted;if(localStream)localStream.getAudioTracks().forEach(t=>t.enabled=!muted);$('mute-btn').textContent=muted?'🔇':'🎤';};
@@ -1222,74 +1688,44 @@ async function callClaude(text){
 }
 
 
-// REPLY
-let replyTo=null;
-window.setReply=function(fbKey,text,fromName){replyTo={fbKey,text,fromName};const rb=$('reply-bar');if(rb)rb.style.display='flex';const rp=$('reply-preview');if(rp)rp.textContent=(fromName?fromName+': ':'')+text;};
-window.cancelReply=function(){replyTo=null;const rb=$('reply-bar');if(rb)rb.style.display='none';};
-
-// WALLPAPER
-window.setWallpaper=function(key){
-  const msgs=$('messages');if(!msgs)return;
-  const wp={none:'',g1:'linear-gradient(135deg,#1a1a2e,#0f3460)',g2:'linear-gradient(135deg,#0d2137,#0d5c63)',g3:'linear-gradient(135deg,#1a0533,#3d0066)',g4:'linear-gradient(135deg,#0d1f0d,#1a3a1a)',dots:'dots'};
-  if(key==='none'){msgs.style.background='';msgs.style.backgroundImage='';}
-  else if(key==='dots'){msgs.style.background='#0d1117';msgs.style.backgroundImage='radial-gradient(circle,#30363d 1px,transparent 1px)';msgs.style.backgroundSize='20px 20px';}
-  else{msgs.style.background=wp[key]||'';msgs.style.backgroundImage='';}
-  if(currentPeer)localStorage.setItem('lt_wp_'+(currentPeer.id||''),key);
-  hideModal('wallpaper-modal');toast('🖼️ Wallpaper aplicado!');
+window.togglePlusMenu=function(){
+  var m=document.getElementById('plus-menu');
+  if(!m)return;
+  m.style.display=m.style.display==='block'?'none':'block';
 };
-function loadWallpaper(pid){
-  const msgs=$('messages');if(!msgs){msgs&&(msgs.style.background='');return;}
-  msgs.style.background='';msgs.style.backgroundImage='';
-  if(!pid)return;
-  const k=localStorage.getItem('lt_wp_'+pid);
-  if(k)setWallpaper(k);
+window.viewContactPhoto=function(){
+  if(!currentPeer)return;
+  var av=currentPeer.avatar||'';
+  if(!av){toast('Sem foto de perfil');return;}
+  document.getElementById('photo-viewer-img').src=av;
+  document.getElementById('photo-viewer').style.display='flex';
+};
+window.openRenameContact=function(){
+  if(!currentPeer||currentPeer.isGroup)return;
+  document.getElementById('rename-contact-input').value=currentPeer.displayName||currentPeer.username||'';
+  showModal('rename-contact-modal');
+};
+window.saveContactRename=function(){
+  var newName=document.getElementById('rename-contact-input').value.trim();
+  if(!newName){toast('Introduz um nome');return;}
+  if(!currentPeer)return;
+  localStorage.setItem('lt_cname_'+currentPeer.id,newName);
+  currentPeer.displayName=newName;
+  document.getElementById('chat-peer-name').textContent=newName;
+  hideModal('rename-contact-modal');
+  toast('Nome alterado para '+newName);
+};
+function getContactDisplayName(uid,defaultName){
+  return localStorage.getItem('lt_cname_'+uid)||defaultName;
 }
-
-// FLOAT EMOJI
-function floatEmoji(emoji,el){
-  const rect=el.getBoundingClientRect();
-  const span=document.createElement('span');
-  span.textContent=emoji;
-  span.style.cssText='position:fixed;font-size:28px;pointer-events:none;z-index:9999;left:'+(rect.left+rect.width/2-14)+'px;top:'+rect.top+'px;transition:all 1.2s ease-out';
-  document.body.appendChild(span);
-  setTimeout(()=>{span.style.transform='translateY(-100px) scale(1.8)';span.style.opacity='0';},30);
-  setTimeout(()=>span.remove(),1300);
-}
-
-// STATS
-window.showStats=async function(){
-  const sc=$('stats-content');if(!sc)return;
-  sc.innerHTML='A calcular...';showModal('stats-modal');
-  try{
-    const snap=await get(ref(db,'messages'));const all=snap.val()||{};
-    let total=0,mine=0,imgs=0,voices=0,gifs=0;
-    Object.entries(all).forEach(([chatId,msgs])=>{
-      if(!chatId.includes(myUid))return;
-      Object.values(msgs).forEach(m=>{total++;if(m.from===myUid)mine++;if(m.type==='image')imgs++;if(m.type==='voice')voices++;if(m.type==='gif')gifs++;});
-    });
-    sc.innerHTML='<div>💬 Total mensagens: <strong>'+total+'</strong></div><div>✍️ Minhas mensagens: <strong>'+mine+'</strong></div><div>📷 Imagens: <strong>'+imgs+'</strong></div><div>🎤 Áudios: <strong>'+voices+'</strong></div><div>GIF GIFs: <strong>'+gifs+'</strong></div>';
-  }catch(e){sc.innerHTML='Erro ao calcular.';}
-};
-
-// EXPORT
-window.exportChat=async function(){
-  if(!currentPeer){toast('Abre um chat primeiro');return;}
-  const chatId=currentPeer.isGroup?'group_'+(currentPeer.group&&currentPeer.group.id):cid(myUid,currentPeer.id);
-  try{
-    const snap=await get(ref(db,'messages/'+chatId));
-    const msgs=Object.values(snap.val()||{}).filter(m=>m&&m.ts).sort((a,b)=>a.ts-b.ts);
-    let txt='LockTalk — @'+currentPeer.username+'\nExportado: '+new Date().toLocaleString('pt-PT')+'\n\n';
-    msgs.forEach(m=>{
-      const time=new Date(m.ts).toLocaleString('pt-PT');
-      const name=m.from===myUid?'Eu':'@'+currentPeer.username;
-      if(m.type==='text')txt+='['+time+'] '+name+': '+m.text+'\n';
-      else txt+='['+time+'] '+name+': ['+m.type+']\n';
-    });
-    const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([txt],{type:'text/plain'}));
-    a.download='locktalk_'+currentPeer.username+'.txt';a.click();
-    toast('💾 Conversa exportada!');
-  }catch(e){toast('Erro ao exportar');}
-};
+document.addEventListener('click',function(e){
+  var pm=document.getElementById('plus-menu');
+  if(pm&&pm.style.display==='block'&&!e.target.closest('#plus-menu')&&!e.target.closest('#plus-btn')){
+    pm.style.display='none';
+  }
+  var pv=document.getElementById('photo-viewer');
+  if(pv&&e.target===pv)pv.style.display='none';
+});
 
 </script>
 </body>
