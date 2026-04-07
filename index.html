@@ -1134,7 +1134,7 @@ window.addContact=async function(){
   if(!username){toast('Introduz um nome');return;}
   if(username===myUsername){toast('❌ Esse és tu!');return;}
   const snap=await get(query(ref(db,'users'),orderByChild('username'),equalTo(username)));
-  if(!snap.exists()){toast('❌ @'+username+' não encontrado.');return;}
+  if(!snap.exists()){toast('❌ '+username+' não encontrado.');return;}
   const [uid,data]=Object.entries(snap.val())[0];
   if(uid===myUid){toast('❌ Esse és tu!');return;}
   await set(ref(db,'contacts/'+myUid+'/'+uid),{username:data.username,avatar:data.avatar||'',uid,online:false});
