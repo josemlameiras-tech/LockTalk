@@ -37,11 +37,16 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-seri
 .auth-title{font-size:28px;font-weight:700;color:var(--text);text-align:center;letter-spacing:-0.5px}
 .auth-title span{color:var(--green)}
 .auth-sub{font-size:14px;color:var(--text2);text-align:center;line-height:1.6;max-width:280px}
-.google-btn{display:flex;align-items:center;justify-content:center;gap:12px;background:#fff;color:#3c4043;border:1px solid #dadce0;border-radius:12px;padding:14px 24px;font-size:15px;font-weight:600;cursor:pointer;font-family:inherit;width:100%;max-width:320px;transition:all .2s;box-shadow:0 2px 8px rgba(0,0,0,0.15)}
-.google-btn:hover{box-shadow:0 4px 16px rgba(0,0,0,0.2);transform:translateY(-1px)}
-.google-btn:active{transform:translateY(0)}
-.google-btn:disabled{opacity:.6;cursor:not-allowed;transform:none}
-.google-icon{width:20px;height:20px;flex-shrink:0}
+.auth-actions{display:flex;flex-direction:column;gap:12px;width:100%;max-width:320px}
+.google-btn,.apple-btn,.browser-btn{display:flex;align-items:center;justify-content:center;gap:12px;border-radius:12px;padding:14px 24px;font-size:15px;font-weight:600;cursor:pointer;font-family:inherit;width:100%;max-width:320px;transition:all .2s;box-shadow:0 2px 8px rgba(0,0,0,0.15)}
+.google-btn{background:#fff;color:#3c4043;border:1px solid #dadce0}
+.apple-btn{background:#000;color:#fff;border:1px solid #222}
+.browser-btn{background:var(--surface2);color:var(--text);border:1px solid var(--border);box-shadow:none;font-size:13px;padding:12px 18px}
+.google-btn:hover,.apple-btn:hover,.browser-btn:hover{box-shadow:0 4px 16px rgba(0,0,0,0.2);transform:translateY(-1px)}
+.google-btn:active,.apple-btn:active,.browser-btn:active{transform:translateY(0)}
+.google-btn:disabled,.apple-btn:disabled,.browser-btn:disabled{opacity:.6;cursor:not-allowed;transform:none}
+.google-icon,.apple-icon{width:20px;height:20px;flex-shrink:0}
+.auth-help{font-size:12px;color:var(--text3);text-align:center;line-height:1.6;max-width:320px}
 .auth-error{font-size:13px;color:var(--red);text-align:center;min-height:18px;max-width:320px}
 
 /* PROFILE SETUP */
@@ -174,15 +179,23 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-seri
   <img class="auth-logo" src="data:image/jpeg;base64,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" alt="LockTalk"/>
   <p class="auth-title"><span>Lock</span>Talk</p>
   <p class="auth-sub">Mensagens seguras e em tempo real.<br>Entra com a tua conta Google.</p>
-  <button class="google-btn" id="google-btn" onclick="doGoogleLogin()">
-    <svg class="google-icon" viewBox="0 0 24 24">
-      <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
-      <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
-      <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
-      <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
-    </svg>
-    Entrar com Google
-  </button>
+  <div class="auth-actions">
+    <button class="google-btn" id="google-btn" onclick="doGoogleLogin()">
+      <svg class="google-icon" viewBox="0 0 24 24">
+        <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+        <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+        <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+        <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+      </svg>
+      Entrar com Google
+    </button>
+    <button class="apple-btn" id="apple-btn" onclick="doAppleLogin()">
+      <svg class="apple-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M17.05 20.28c-.98.95-2.05.8-3.08.36-1.09-.45-2.08-.47-3.23 0-1.45.61-2.21.43-3.08-.36C2.72 15.23 3.45 7.54 8.95 7.23c1.34.08 2.28.73 3.06.79 1.17-.24 2.29-.91 3.54-.83 1.5.12 2.62.71 3.37 1.78-3.1 1.86-2.37 6.03.48 7.17-.57 1.41-1.31 2.79-2.35 4.08zM11.92 7.12c-.15-2.09 1.55-3.82 3.49-3.99.27 2.31-1.72 4.13-3.49 3.99z"/></svg>
+      Entrar com Apple
+    </button>
+    <button class="browser-btn" onclick="openInSafariHelper()">Abrir no browser seguro</button>
+  </div>
+  <p class="auth-help" id="auth-help">No Safari, Google e Apple funcionam melhor. Dentro de apps iOS, alguns logins podem ser bloqueados pelo WebView.</p>
   <p class="auth-error" id="welcome-error"></p>
 </div>
 
@@ -259,14 +272,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-seri
     <button class="hbtn" onclick="showModal('poll-modal')">📊</button>
     <button class="hbtn" onclick="showModal('wallpaper-modal')">🖼️</button>
     <button class="hbtn" onclick="toggleThemeBar()">🎨</button>
-    <button class="hbtn" id="more-btn" onclick="toggleMoreMenu()">⋯</button>
-  </div>
-  <div id="more-menu" style="display:none;position:absolute;top:62px;right:12px;background:var(--surface2);border:1px solid var(--border);border-radius:16px;padding:8px;z-index:300;box-shadow:0 10px 30px rgba(0,0,0,.35);width:230px">
-    <button class="ma-btn" onclick="openRenameContact()" style="display:block;width:100%;text-align:left;padding:12px;border-radius:10px">✏️ Mudar nome do contacto</button>
-    <button class="ma-btn" onclick="viewContactPhoto()" style="display:block;width:100%;text-align:left;padding:12px;border-radius:10px">🖼️ Ver foto em grande</button>
-    <button class="ma-btn" onclick="showStats()" style="display:block;width:100%;text-align:left;padding:12px;border-radius:10px">📈 Estatísticas</button>
-    <button class="ma-btn" onclick="exportChat()" style="display:block;width:100%;text-align:left;padding:12px;border-radius:10px">💾 Exportar conversa</button>
-    <button class="ma-btn" onclick="showModal('delete-modal')" style="display:block;width:100%;text-align:left;padding:12px;border-radius:10px;color:var(--red)">🗑️ Apagar conversa</button>
+    <button class="hbtn" onclick="toggleMoreMenu()">⋯</button>
+    <button class="hbtn" onclick="showModal('delete-modal')">🗑️</button>
   </div>
   <div id="theme-bar" style="display:none;padding:10px 14px;border-bottom:1px solid var(--border);gap:8px;align-items:center;background:var(--bg2);flex-shrink:0;overflow-x:auto"><span style="font-size:12px;color:var(--text2);flex-shrink:0">Tema:</span><div style="width:26px;height:26px;border-radius:50%;background:#1D9E75;cursor:pointer;border:2px solid white;flex-shrink:0" onclick="setTheme('#1D9E75','#0d1117','#21262d')"></div><div style="width:26px;height:26px;border-radius:50%;background:#3498db;cursor:pointer;flex-shrink:0" onclick="setTheme('#3498db','#0a1628','#1a2744')"></div><div style="width:26px;height:26px;border-radius:50%;background:#9b59b6;cursor:pointer;flex-shrink:0" onclick="setTheme('#9b59b6','#1a0d2e','#2d1b4e')"></div><div style="width:26px;height:26px;border-radius:50%;background:#e74c3c;cursor:pointer;flex-shrink:0" onclick="setTheme('#e74c3c','#2e0d0d','#4e1a1a')"></div><div style="width:26px;height:26px;border-radius:50%;background:#f39c12;cursor:pointer;flex-shrink:0" onclick="setTheme('#f39c12','#2e1f0d','#4e351a')"></div><div style="width:26px;height:26px;border-radius:50%;background:#e91e8c;cursor:pointer;flex-shrink:0" onclick="setTheme('#e91e8c','#2e0d1e','#4e1a35')"></div></div>
   <div id="pinned-bar" style="display:none;padding:8px 14px;border-bottom:1px solid var(--border);background:var(--bg2);flex-shrink:0;cursor:pointer" onclick="scrollToPinned()">
@@ -288,19 +295,25 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-seri
     <button onclick="cancelReply()" style="background:none;border:none;cursor:pointer;color:var(--text3);font-size:18px">✕</button>
   </div>
   <div id="emoji-picker-main"></div>
-  <div id="plus-menu" style="display:none;position:absolute;bottom:84px;left:12px;background:var(--surface2);border:1px solid var(--border);border-radius:16px;padding:12px;z-index:300;box-shadow:0 10px 30px rgba(0,0,0,.35);width:250px">
-    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px">
-      <button class="ma-btn" onclick="document.getElementById('img-input').click();togglePlusMenu()" style="padding:14px 8px;border-radius:12px">📷<br>Imagem</button>
-      <button class="ma-btn" onclick="toggleEmoji();togglePlusMenu()" style="padding:14px 8px;border-radius:12px">😊<br>Emoji</button>
-      <button class="ma-btn" onclick="showModal('secret-msg-modal');togglePlusMenu()" style="padding:14px 8px;border-radius:12px">🔐<br>Secreta</button>
-      <button class="ma-btn" onclick="showGifPicker();togglePlusMenu()" style="padding:14px 8px;border-radius:12px">GIF<br>GIF</button>
-      <button class="ma-btn" onclick="shareLocation();togglePlusMenu()" style="padding:14px 8px;border-radius:12px">📍<br>Local</button>
-      <button class="ma-btn" onclick="showModal('poll-modal');togglePlusMenu()" style="padding:14px 8px;border-radius:12px">📊<br>Enquete</button>
-    </div>
+  <div id="plus-menu" style="display:none;position:absolute;bottom:78px;left:12px;background:var(--surface2);border:1px solid var(--border);border-radius:16px;padding:12px;z-index:300;box-shadow:0 10px 30px rgba(0,0,0,.35);width:280px">
+  <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px">
+    <button class="ma-btn" onclick="document.getElementById('img-input').click();togglePlusMenu(false)" style="padding:16px;border-radius:12px">📷<br>Imagem</button>
+    <button class="ma-btn" onclick="showModal('secret-msg-modal');togglePlusMenu(false)" style="padding:16px;border-radius:12px">🔐<br>Secreto</button>
+    <button class="ma-btn" onclick="showGifPicker();togglePlusMenu(false)" style="padding:16px;border-radius:12px">GIF<br>GIF</button>
+    <button class="ma-btn" onclick="shareLocation();togglePlusMenu(false)" style="padding:16px;border-radius:12px">📍<br>Local</button>
+    <button class="ma-btn" onclick="showModal('poll-modal');togglePlusMenu(false)" style="padding:16px;border-radius:12px">📊<br>Enquete</button>
+    <button class="ma-btn" onclick="toast('Áudio: mantém premido no microfone') ;togglePlusMenu(false)" style="padding:16px;border-radius:12px">🎤<br>Áudio</button>
   </div>
-  <div id="input-area">
-    <button class="iab" id="plus-btn" onclick="togglePlusMenu()">＋</button>
-    <button class="iab" onclick="document.getElementById('img-input').click()">📎</button>
+</div>
+<div id="more-menu" style="display:none;position:absolute;top:72px;right:12px;background:var(--surface2);border:1px solid var(--border);border-radius:16px;padding:10px;z-index:300;box-shadow:0 10px 30px rgba(0,0,0,.35);width:280px">
+  <button class="ma-btn" onclick="openRenameContact()" style="display:block;width:100%;text-align:left;padding:12px;border-radius:12px">✏️ Mudar nome do contacto</button>
+  <button class="ma-btn" onclick="viewContactPhoto()" style="display:block;width:100%;text-align:left;padding:12px;border-radius:12px">🖼️ Ver foto em grande</button>
+  <button class="ma-btn" onclick="showStats();toggleMoreMenu(false)" style="display:block;width:100%;text-align:left;padding:12px;border-radius:12px">📈 Estatísticas</button>
+  <button class="ma-btn" onclick="exportConversation();toggleMoreMenu(false)" style="display:block;width:100%;text-align:left;padding:12px;border-radius:12px">💾 Exportar conversa</button>
+  <button class="ma-btn" onclick="showModal('delete-modal');toggleMoreMenu(false)" style="display:block;width:100%;text-align:left;padding:12px;border-radius:12px;color:var(--red)">🗑️ Apagar conversa</button>
+</div>
+<div id="input-area">
+    <button class="iab" onclick="togglePlusMenu()">＋</button>
     <input type="file" id="img-input" accept="image/*" style="display:none" onchange="sendImage(this)"/>
     <button class="iab" onclick="toggleEmoji()">😊</button>
     <button class="iab" onclick="showModal('secret-msg-modal')" title="Mensagem secreta">🔐</button>
@@ -526,12 +539,22 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-seri
     </div>
   </div>
 </div>
+<div class="modal-overlay" id="auth-help-modal">
+  <div class="modal">
+    <h3>🔐 Login seguro</h3>
+    <p>No iPhone dentro do Xcode, o Google pode bloquear o login em WebView. Usa Safari para concluir o login e depois volta à app.</p>
+    <div class="mbtns">
+      <button class="btn-c" onclick="hideModal('auth-help-modal')">Fechar</button>
+      <button class="btn-ok" onclick="openInSafariHelper()">Abrir no browser</button>
+    </div>
+  </div>
+</div>
 <div id="toast"></div>
 
 <script type="module">
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js';
 import { getDatabase, ref, set, get, onValue, push, remove, onDisconnect, update, query, orderByChild, equalTo } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js';
-import { getAuth, GoogleAuthProvider, signInWithRedirect, getRedirectResult, onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js';
+import { getAuth, GoogleAuthProvider, OAuthProvider, signInWithRedirect, getRedirectResult, onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js';
 
 const FB={apiKey:"AIzaSyBAnaHYfAyMg_ZCUpWfY2wzpKbOKyXIJtw",authDomain:"locktalk-b8306.firebaseapp.com",databaseURL:"https://locktalk-b8306-default-rtdb.europe-west1.firebasedatabase.app",projectId:"locktalk-b8306",storageBucket:"locktalk-b8306.firebasestorage.app",messagingSenderId:"296055220695",appId:"1:296055220695:web:64e71a7b4c68d2ec630392"};
 const fbApp=initializeApp(FB);
@@ -539,17 +562,9 @@ const db=getDatabase(fbApp);
 const auth=getAuth(fbApp);
 const provider=new GoogleAuthProvider();
 provider.setCustomParameters({prompt:'select_account'});
-
-getRedirectResult(auth)
-  .then((result)=>{
-    if(result?.user){console.log('Login sucesso:',result.user.uid);}
-  })
-  .catch((e)=>{
-    const errEl=document.getElementById('welcome-error');
-    if(errEl)errEl.textContent='Erro: '+e.message;
-    console.error('redirect:',e);
-  });
-
+const appleProvider=new OAuthProvider('apple.com');
+appleProvider.addScope('email');
+appleProvider.addScope('name');
 const EMOJIS=['😀','😂','❤️','👍','🔥','😍','🎉','😢','😮','👏','🙏','💪','✅','😎','🤔','💯','🥰','😡','👋','🎊'];
 
 let myUid=null,myUsername=null,myEmail=null,myAvatar=null,myGooglePhoto=null;
@@ -568,6 +583,19 @@ window.showScreen=function(id){document.querySelectorAll('.screen').forEach(s=>s
 window.showModal=function(id){$(id).classList.add('open');};
 window.hideModal=function(id){$(id).classList.remove('open');};
 
+const isEmbeddedWebView=()=>/wv|WebView|(iPhone|iPod|iPad)(?!.*Safari)/i.test(navigator.userAgent)||((/iPhone|iPod|iPad/i.test(navigator.userAgent)) && !/Safari/i.test(navigator.userAgent));
+
+getRedirectResult(auth)
+  .then((result)=>{
+    if(result?.user){
+      console.log('Login sucesso:',result.user);
+      $('welcome-error').textContent='';
+    }
+  })
+  .catch(e=>{
+    console.error('redirect:',e);
+    if($('welcome-error')) $('welcome-error').textContent='Erro: '+e.message;
+  });
 onAuthStateChanged(auth,async user=>{
   if(user){
     myUid=user.uid;myEmail=user.email;myGooglePhoto=user.photoURL;
@@ -599,16 +627,40 @@ window.setAppTheme=function(mode){
 const _savedTheme=localStorage.getItem('lt_theme')||'dark';
 setAppTheme(_savedTheme);
 
-window.doGoogleLogin=async function(){
-  $('google-btn').disabled=true;
-  $('google-btn').textContent='A entrar...';
-  $('welcome-error').textContent='';
+window.openInSafariHelper=function(){
+  const url=location.href;
   try{
+    window.open(url,'_blank');
+  }catch(e){}
+  $('welcome-error').textContent='Se o login não abrir aqui, copia este link para o Safari: '+url;
+  showModal('auth-help-modal');
+};
+
+window.doGoogleLogin=async function(){
+  $('google-btn').disabled=true;$('google-btn').textContent='A entrar...';$('welcome-error').textContent='';
+  try{
+    if(isEmbeddedWebView()){
+      $('welcome-error').textContent='O Google pode bloquear login dentro da app. Se falhar, usa “Abrir no browser seguro”.';
+    }
     await signInWithRedirect(auth,provider);
   }catch(e){
     $('welcome-error').textContent='Erro ao entrar com Google: '+e.message;
     $('google-btn').disabled=false;
     $('google-btn').innerHTML='<svg class="google-icon" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>Entrar com Google';
+  }
+};
+
+window.doAppleLogin=async function(){
+  $('apple-btn').disabled=true;$('apple-btn').textContent='A entrar...';$('welcome-error').textContent='';
+  try{
+    if(isEmbeddedWebView()){
+      $('welcome-error').textContent='O login Apple funciona melhor no Safari. Se falhar, usa “Abrir no browser seguro”.';
+    }
+    await signInWithRedirect(auth,appleProvider);
+  }catch(e){
+    $('welcome-error').textContent='Erro ao entrar com Apple: '+e.message;
+    $('apple-btn').disabled=false;
+    $('apple-btn').innerHTML='<svg class="apple-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M17.05 20.28c-.98.95-2.05.8-3.08.36-1.09-.45-2.08-.47-3.23 0-1.45.61-2.21.43-3.08-.36C2.72 15.23 3.45 7.54 8.95 7.23c1.34.08 2.28.73 3.06.79 1.17-.24 2.29-.91 3.54-.83 1.5.12 2.62.71 3.37 1.78-3.1 1.86-2.37 6.03.48 7.17-.57 1.41-1.31 2.79-2.35 4.08zM11.92 7.12c-.15-2.09 1.55-3.82 3.49-3.99.27 2.31-1.72 4.13-3.49 3.99z"/></svg>Entrar com Apple';
   }
 };
 
@@ -1335,55 +1387,6 @@ window.exportChat=async function(){
     toast('💾 Conversa exportada!');
   }catch(e){toast('Erro ao exportar');}
 };
-
-// CONTACT TOOLS / MENUS
-window.togglePlusMenu=function(){
-  const m=$('plus-menu'); if(!m) return;
-  m.style.display=m.style.display==='block'?'none':'block';
-};
-window.toggleMoreMenu=function(){
-  const m=$('more-menu'); if(!m) return;
-  m.style.display=m.style.display==='block'?'none':'block';
-};
-window.viewContactPhoto=function(){
-  if(!currentPeer) return;
-  const av=currentPeer.avatar||'';
-  if(!av){toast('Sem foto de perfil');return;}
-  $('photo-viewer-img').src=av;
-  $('photo-viewer').style.display='flex';
-  const mm=$('more-menu'); if(mm) mm.style.display='none';
-};
-window.openRenameContact=function(){
-  if(!currentPeer || currentPeer.isGroup){toast('Só disponível em chats diretos');return;}
-  $('rename-contact-input').value=currentPeer.displayName||currentPeer.username||'';
-  showModal('rename-contact-modal');
-  const mm=$('more-menu'); if(mm) mm.style.display='none';
-};
-window.saveContactRename=function(){
-  const newName=$('rename-contact-input').value.trim();
-  if(!newName){toast('Introduz um nome');return;}
-  if(!currentPeer) return;
-  localStorage.setItem('lt_cname_'+currentPeer.id,newName);
-  currentPeer.displayName=newName;
-  if($('chat-peer-name')) $('chat-peer-name').textContent=newName;
-  hideModal('rename-contact-modal');
-  toast('Nome alterado para '+newName);
-};
-function getContactDisplayName(uid, defaultName){
-  return localStorage.getItem('lt_cname_'+uid) || defaultName;
-}
-document.addEventListener('click',function(e){
-  const pm=$('plus-menu');
-  if(pm&&pm.style.display==='block'&&!e.target.closest('#plus-menu')&&!e.target.closest('#plus-btn')){
-    pm.style.display='none';
-  }
-  const mm=$('more-menu');
-  if(mm&&mm.style.display==='block'&&!e.target.closest('#more-menu')&&!e.target.closest('#more-btn')){
-    mm.style.display='none';
-  }
-  const pv=$('photo-viewer');
-  if(pv&&e.target===pv)pv.style.display='none';
-});
 
 </script>
 </body>
