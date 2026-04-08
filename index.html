@@ -1130,32 +1130,32 @@ function startCallTimer(){callSecs=0;callTimerInt=setInterval(()=>{callSecs++;co
 // Patch enterApp to load stories and listen calls
 
 // ── DEMO ──
-let _ds=0,_dt=null;
+var _ds=0,_dt=null;
 function _showDS(n){
-  for(let i=0;i<4;i++){
-    const s=document.getElementById('ds'+i),d=document.getElementById('dd'+i);
-    if(s){s.style.display='none';}
-    if(d){d.classList.remove('on');}
+  for(var i=0;i<4;i++){
+    var s=document.getElementById('ds'+i),d=document.getElementById('dd'+i);
+    if(s)s.style.display=i===n?'flex':'none';
+    if(d){d.classList.remove('on');if(i===n)d.classList.add('on');}
   }
-  const s=document.getElementById('ds'+n),d=document.getElementById('dd'+n);
-  if(s)s.style.display='flex';
-  if(d)d.classList.add('on');
-  const prog=document.getElementById('demo-prog');
+  var prog=document.getElementById('demo-prog');
   if(prog){
-    prog.style.transition='none';
-    prog.style.width='0';
-    setTimeout(()=>{prog.style.transition='width 10s linear';prog.style.width='100%';},100);
+    prog.style.transition='none';prog.style.width='0';
+    setTimeout(function(){prog.style.transition='width 10s linear';prog.style.width='100%';},50);
   }
 }
-function _nextSlide(){
-  if(_ds<3){_ds++;_showDS(_ds);}
-  else{clearInterval(_dt);skipDemo();}
-}
-_dt=setInterval(_nextSlide,10000);
-window.skipDemo=function(){
-  clearInterval(_dt);
+function skipDemo(){
+  if(_dt){clearInterval(_dt);_dt=null;}
   showScreen('screen-welcome');
-};
+}
+window.skipDemo=skipDemo;
+setTimeout(function(){
+  _showDS(0);
+  _dt=setInterval(function(){
+    _ds++;
+    if(_ds>3){clearInterval(_dt);skipDemo();return;}
+    _showDS(_ds);
+  },10000);
+},500);
 
 // ── THEME ──
 window.setAppTheme=function(mode){
@@ -1360,7 +1360,7 @@ window.showChatStats=async function(){
 };
 
 // ── CALLS (WebRTC) ──
-let localStream=null,peerConn=null,callTimerInt=null,callSecs=0,callType='audio',incomingData=null,callList=null;
+var localStream=null,peerConn=null,callTimerInt=null,callSecs=0,callType='audio',incomingData=null,callList=null;
 const ICE={iceServers:[{urls:'stun:stun.l.google.com:19302'},{urls:'stun:stun1.l.google.com:19302'}]};
 
 window.startCall=async function(type){
@@ -1434,7 +1434,7 @@ window.endCall=function(){
   callSecs=0;localStream=null;peerConn=null;
   if(myUid)remove(ref(db,'calls/'+myUid));toast('📵 Chamada terminada');
 };
-let muted=false,camOff=false;
+muted=false,camOff=false;
 window.toggleMute=function(){muted=!muted;if(localStream)localStream.getAudioTracks().forEach(t=>t.enabled=!muted);document.getElementById('mute-btn').textContent=muted?'🔇':'🎤';};
 window.toggleCam=function(){camOff=!camOff;if(localStream)localStream.getVideoTracks().forEach(t=>t.enabled=!camOff);document.getElementById('cam-btn').textContent=camOff?'📷':'📹';};
 function startCallTimer(){callSecs=0;callTimerInt=setInterval(()=>{callSecs++;const m=Math.floor(callSecs/60),s=callSecs%60;document.getElementById('call-timer-txt').textContent=m+':'+(s<10?'0':'')+s;},1000);}
