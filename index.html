@@ -107,9 +107,14 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-seri
 .tick{color:var(--blue)}
 .msg-img{max-width:220px;border-radius:12px;cursor:pointer;display:block;margin-bottom:2px}
 .voice-bubble{display:flex;align-items:center;gap:10px;padding:8px 12px;min-width:160px}
-.vplay{width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,0.2);border:none;cursor:pointer;color:white;font-size:14px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
-.vbar{flex:1;height:3px;background:rgba(255,255,255,0.3);border-radius:2px}
-.vdur{font-size:11px;color:rgba(255,255,255,.8)}
+.vplay{width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,0.2);border:none;cursor:pointer;color:white;font-size:14px;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:background .15s}
+.vplay:active{background:rgba(255,255,255,0.35)}
+.vbar{flex:1;height:4px;background:rgba(255,255,255,0.25);border-radius:2px;position:relative;overflow:hidden}
+.vbar-fill{height:100%;background:rgba(255,255,255,0.8);border-radius:2px;width:0%;transition:width .1s linear}
+.vdur{font-size:11px;color:rgba(255,255,255,.8);flex-shrink:0}
+.group-av{border-radius:50%;background:linear-gradient(135deg,var(--green),var(--green2));display:flex;align-items:center;justify-content:center;font-weight:700;color:white;flex-shrink:0;border:1px solid var(--border)}
+.member-check-row{display:flex;align-items:center;gap:10px;padding:8px;border-radius:8px;cursor:pointer}
+.member-check-row:hover{background:var(--surface3)}
 .reactions-bar{display:flex;gap:3px;margin-top:3px;flex-wrap:wrap}
 .rpill{background:var(--surface3);border:1px solid var(--border);border-radius:20px;padding:2px 8px;font-size:12px;cursor:pointer}
 .rpill.mine{border-color:var(--green);background:var(--green-glow)}
@@ -286,6 +291,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-seri
   <div class="tabs">
     <div class="tab active" onclick="switchTab('chats')">💬 Chats</div>
     <div class="tab" onclick="switchTab('contacts')">👥 Contactos</div>
+    <div class="tab" onclick="switchTab('groups')">👥 Grupos</div>
   </div>
   <div id="tab-chats" class="tab-content active">
     <div id="chats-list" class="list-area"><div class="list-empty"><span class="list-empty-icon">💬</span>Sem conversas.<br>Adiciona um contacto!</div></div>
@@ -296,6 +302,12 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-seri
       <button onclick="addContact()">Adicionar</button>
     </div>
     <div id="contacts-list" class="list-area"><div class="list-empty"><span class="list-empty-icon">👥</span>Sem contactos.<br>Adiciona pelo nome!</div></div>
+  </div>
+  <div id="tab-groups" class="tab-content">
+    <div class="add-bar">
+      <button onclick="openCreateGroupModal()" style="width:100%;background:var(--green);color:white;border:none;border-radius:20px;padding:9px 18px;font-size:13px;cursor:pointer;font-weight:600">+ Criar grupo</button>
+    </div>
+    <div id="groups-list" class="list-area"><div class="list-empty"><span class="list-empty-icon">👥</span>Sem grupos.<br>Cria o primeiro!</div></div>
   </div>
 </div>
 
@@ -308,6 +320,10 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-seri
       <p id="chat-peer-name"></p>
       <span id="chat-peer-sub">online</span>
     </div>
+    <button class="hbtn" id="rename-contact-btn" onclick="openRenameModal()" title="Renomear contacto">✏️</button>
+    <button class="hbtn" id="group-info-btn" onclick="showGroupInfo()" title="Info do grupo" style="display:none">👁️</button>
+    <button class="hbtn" onclick="startCall('audio')" title="Chamada de voz" id="call-audio-btn">📞</button>
+    <button class="hbtn" onclick="startCall('video')" title="Videochamada" id="call-video-btn">📹</button>
     <button class="hbtn" onclick="toggleThemeBar()">🎨</button><button class="hbtn" onclick="showModal('delete-modal')">🗑️</button>
   </div>
   <div id="theme-bar" style="display:none;padding:10px 14px;border-bottom:1px solid var(--border);gap:8px;align-items:center;background:var(--bg2);flex-shrink:0;overflow-x:auto"><span style="font-size:12px;color:var(--text2);flex-shrink:0">Tema:</span><div style="width:26px;height:26px;border-radius:50%;background:#1D9E75;cursor:pointer;border:2px solid white;flex-shrink:0" onclick="setTheme('#1D9E75','#0d1117','#21262d')"></div><div style="width:26px;height:26px;border-radius:50%;background:#3498db;cursor:pointer;flex-shrink:0" onclick="setTheme('#3498db','#0a1628','#1a2744')"></div><div style="width:26px;height:26px;border-radius:50%;background:#9b59b6;cursor:pointer;flex-shrink:0" onclick="setTheme('#9b59b6','#1a0d2e','#2d1b4e')"></div><div style="width:26px;height:26px;border-radius:50%;background:#e74c3c;cursor:pointer;flex-shrink:0" onclick="setTheme('#e74c3c','#2e0d0d','#4e1a1a')"></div><div style="width:26px;height:26px;border-radius:50%;background:#f39c12;cursor:pointer;flex-shrink:0" onclick="setTheme('#f39c12','#2e1f0d','#4e351a')"></div><div style="width:26px;height:26px;border-radius:50%;background:#e91e8c;cursor:pointer;flex-shrink:0" onclick="setTheme('#e91e8c','#2e0d1e','#4e1a35')"></div></div>
@@ -469,7 +485,55 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-seri
   </div>
 </div>
 
-<div class="modal-overlay" id="secret-msg-modal"><div class="modal"><h3>🔐 Mensagem secreta</h3><p>O destinatário precisa de uma password para ler.</p><input id="secret-msg-text" placeholder="A tua mensagem..."/><input id="secret-msg-pass" type="password" placeholder="Password para abrir..."/><div class="mbtns"><button class="btn-c" onclick="hideModal('secret-msg-modal')">Cancelar</button><button class="btn-ok" onclick="sendSecretMsg()">Enviar 🔐</button></div></div></div><div class="modal-overlay" id="unlock-secret-modal"><div class="modal"><h3>🔐 Mensagem protegida</h3><p>Introduz a password para ler.</p><input id="unlock-pass-input" type="password" placeholder="Password..."/><p id="unlock-error" style="font-size:12px;color:#f85149;min-height:16px"></p><div class="mbtns"><button class="btn-c" onclick="hideModal('unlock-secret-modal')">Cancelar</button><button class="btn-ok" onclick="unlockSecret()">Abrir</button></div></div></div><div class="modal-overlay" id="forward-modal"><div class="modal"><h3>↪️ Reencaminhar</h3><p>Escolhe para quem enviar:</p><div id="forward-contacts" style="max-height:200px;overflow-y:auto;margin-bottom:10px"></div><div class="mbtns"><button class="btn-c" onclick="hideModal('forward-modal')">Cancelar</button><button class="btn-ok" onclick="doForward()">Reencaminhar</button></div></div></div><div id="toast"></div>
+<div class="modal-overlay" id="secret-msg-modal"><div class="modal"><h3>🔐 Mensagem secreta</h3><p>O destinatário precisa de uma password para ler.</p><input id="secret-msg-text" placeholder="A tua mensagem..."/><input id="secret-msg-pass" type="password" placeholder="Password para abrir..."/><div class="mbtns"><button class="btn-c" onclick="hideModal('secret-msg-modal')">Cancelar</button><button class="btn-ok" onclick="sendSecretMsg()">Enviar 🔐</button></div></div></div><div class="modal-overlay" id="unlock-secret-modal"><div class="modal"><h3>🔐 Mensagem protegida</h3><p>Introduz a password para ler.</p><input id="unlock-pass-input" type="password" placeholder="Password..."/><p id="unlock-error" style="font-size:12px;color:#f85149;min-height:16px"></p><div class="mbtns"><button class="btn-c" onclick="hideModal('unlock-secret-modal')">Cancelar</button><button class="btn-ok" onclick="unlockSecret()">Abrir</button></div></div></div><div class="modal-overlay" id="forward-modal"><div class="modal"><h3>↪️ Reencaminhar</h3><p>Escolhe para quem enviar:</p><div id="forward-contacts" style="max-height:200px;overflow-y:auto;margin-bottom:10px"></div><div class="mbtns"><button class="btn-c" onclick="hideModal('forward-modal')">Cancelar</button><button class="btn-ok" onclick="doForward()">Reencaminhar</button></div></div></div>
+
+<!-- RENAME CONTACT MODAL -->
+<div class="modal-overlay" id="rename-contact-modal">
+  <div class="modal">
+    <h3>✏️ Renomear contacto</h3>
+    <p>Define como este contacto aparece para ti. Não altera o nome dele.</p>
+    <input id="rename-contact-input" placeholder="Apelido (vazio para remover)..." maxlength="30"/>
+    <div class="mbtns">
+      <button class="btn-c" onclick="hideModal('rename-contact-modal')">Cancelar</button>
+      <button class="btn-ok" onclick="saveContactNickname()">Guardar</button>
+    </div>
+  </div>
+</div>
+
+<!-- CREATE GROUP MODAL -->
+<div class="modal-overlay" id="create-group-modal">
+  <div class="modal">
+    <h3>👥 Criar grupo</h3>
+    <input id="group-name-input" placeholder="Nome do grupo..." maxlength="40"/>
+    <p style="font-size:12px;color:var(--text2);margin-bottom:8px">Seleciona contactos:</p>
+    <div id="create-group-member-list" style="max-height:180px;overflow-y:auto;margin-bottom:10px"></div>
+    <div class="mbtns">
+      <button class="btn-c" onclick="hideModal('create-group-modal')">Cancelar</button>
+      <button class="btn-ok" onclick="createGroup()">Criar</button>
+    </div>
+  </div>
+</div>
+
+<!-- GROUP INFO OVERLAY -->
+<div id="group-info-overlay" style="position:fixed;inset:0;background:var(--surface);display:none;flex-direction:column;z-index:600">
+  <div style="padding:12px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;background:var(--bg2);flex-shrink:0">
+    <button class="hbtn" onclick="closeGroupInfo()">&#8592;</button>
+    <span style="font-size:15px;font-weight:600;color:var(--text);flex:1">Info do grupo</span>
+  </div>
+  <div style="flex:1;overflow-y:auto;padding:16px">
+    <div id="group-info-name" style="font-size:20px;font-weight:700;color:var(--text);margin-bottom:4px"></div>
+    <div id="group-info-count" style="font-size:13px;color:var(--text2);margin-bottom:20px"></div>
+    <h4 style="font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:.8px;margin-bottom:10px">Membros</h4>
+    <div id="group-member-list-panel"></div>
+  </div>
+</div>
+
+<!-- PHOTO LIGHTBOX -->
+<div id="av-lightbox" onclick="closeAvatarLightbox()" style="position:fixed;inset:0;background:rgba(0,0,0,.92);display:none;align-items:center;justify-content:center;z-index:2000;cursor:zoom-out">
+  <img id="av-lightbox-img" src="" style="max-width:90%;max-height:90%;border-radius:16px;object-fit:contain;box-shadow:0 20px 60px rgba(0,0,0,.8)"/>
+</div>
+
+<div id="toast"></div>
 
 <script type="module">
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js';
@@ -485,6 +549,9 @@ const EMOJIS=['😀','😂','❤️','👍','🔥','😍','🎉','😢','😮','
 
 let myUid=null,myUsername=null,myEmail=null,myAvatar=null,myGooglePhoto=null;
 let currentPeer=null,msgListener=null,typingListener=null,typingTimer=null;
+let currentGroup=null,groupMsgListener=null,groupsListener=null;
+let currentAudio=null,currentVBtn=null;
+let iceCandListener=null;
 let mediaRecorder=null,audioChunks=[],recStart=0,setupAvatar=null;
 const unread={};
 
@@ -574,7 +641,7 @@ async function enterApp(){
   $('p-email-display').textContent=myEmail||'';
   $('p-username-field').textContent='@'+myUsername;
   showScreen('screen-main');
-  listenContacts();listenChats();loadStories();listenCalls();
+  listenContacts();listenChats();loadStories();listenCalls();listenGroups();
 }
 
 function listenContacts(){onValue(ref(db,'contacts/'+myUid),snap=>renderContacts(snap.val()));}
@@ -585,9 +652,15 @@ function renderContacts(contacts){
   if(!entries.length){list.innerHTML='<div class="list-empty"><span class="list-empty-icon">👥</span>Sem contactos.<br>Adiciona pelo nome!</div>';return;}
   entries.forEach(([uid,c])=>{
     const item=document.createElement('div');item.className='list-item';
-    item.appendChild(renderAv(c.avatar,c.username,44,c.online));
+    const avEl=renderAv(c.avatar,c.username,44,c.online);
+    if(c.avatar&&(c.avatar.startsWith('data:')||c.avatar.startsWith('http'))){
+      avEl.style.cursor='pointer';
+      avEl.onclick=(e)=>{e.stopPropagation();openAvatarLightbox(c.avatar);};
+    }
+    item.appendChild(avEl);
+    const displayName=c.nickname||('@'+c.username);
     const info=document.createElement('div');info.className='item-info';
-    info.innerHTML=`<p>@${c.username}</p><span>${c.online?'🟢 online':'⚪ offline'}</span>`;
+    info.innerHTML=`<p>${displayName}</p><span>${c.online?'🟢 online':'⚪ offline'}</span>`;
     item.appendChild(info);item.onclick=()=>openChat({id:uid,...c});
     list.appendChild(item);
   });
@@ -616,10 +689,11 @@ function upsertChatItem(uid,c,last){
   }
   const lastText=last?(last.type==='image'?'📷 Imagem':last.type==='voice'?'🎤 Áudio':last.text||''):'';
   const cnt=unread[uid]||0;
+  const displayName=c.nickname||('@'+c.username);
   item.innerHTML='';
   item.appendChild(renderAv(c.avatar,c.username,44,c.online));
   const info=document.createElement('div');info.className='item-info';
-  info.innerHTML=`<p>@${c.username}</p><span>${lastText}</span>`;item.appendChild(info);
+  info.innerHTML=`<p>${displayName}</p><span>${lastText}</span>`;item.appendChild(info);
   const meta=document.createElement('div');meta.className='item-meta';
   meta.innerHTML=`<span class="item-time">${last?gt(last.ts):''}</span>${cnt>0?`<div class="unread-badge">${cnt}</div>`:''}`;
   item.appendChild(meta);item.onclick=()=>openChat({id:uid,...c});
@@ -654,27 +728,38 @@ function renderAv(avatar,name,size=44,online=false){
 }
 
 window.switchTab=function(t){
-  document.querySelectorAll('.tab').forEach((tab,i)=>tab.classList.toggle('active',(i===0&&t==='chats')||(i===1&&t==='contacts')));
+  const tabMap=['chats','contacts','groups'];
+  document.querySelectorAll('.tab').forEach((tab,i)=>tab.classList.toggle('active',tabMap[i]===t));
   document.querySelectorAll('.tab-content').forEach(tc=>tc.classList.remove('active'));
   $('tab-'+t).classList.add('active');
 };
 
 function openChat(peer){
-  currentPeer=peer;unread[peer.id]=0;
-  $('chat-peer-name').textContent='@'+peer.username;
+  currentPeer=peer;currentGroup=null;unread[peer.id]=0;
+  const displayName=peer.nickname||('@'+peer.username);
+  $('chat-peer-name').textContent=displayName;
   $('chat-peer-sub').textContent=peer.online?'🟢 online':'⚪ offline';
-  const w=$('chat-peer-av-wrap');w.innerHTML='';w.appendChild(renderAv(peer.avatar,peer.username,36,peer.online));
+  const w=$('chat-peer-av-wrap');w.innerHTML='';
+  const avEl=renderAv(peer.avatar,peer.username,36,peer.online);
+  if(peer.avatar&&(peer.avatar.startsWith('data:')||peer.avatar.startsWith('http'))){
+    avEl.style.cursor='pointer';avEl.onclick=()=>openAvatarLightbox(peer.avatar);
+  }
+  w.appendChild(avEl);
+  $('rename-contact-btn').style.display='';
+  $('group-info-btn').style.display='none';
+  $('call-audio-btn').style.display='';
+  $('call-video-btn').style.display='';
   $('messages').innerHTML='';showScreen('screen-chat');
   const chatId=cid(myUid,peer.id);
   if(msgListener)msgListener();
   msgListener=onValue(ref(db,'messages/'+chatId),snap=>{
     const data=snap.val();$('messages').innerHTML='';
     if(!data){$('messages').innerHTML='<div style="flex:1;display:flex;align-items:center;justify-content:center;font-size:13px;color:var(--text3)">Envia a primeira mensagem!</div>';return;}
-    Object.entries(data).sort((a,b)=>a[1].ts-b[1].ts).forEach(([key,m])=>{if(m&&m.ts)addBubble({...m,fbKey:key},chatId);});
+    Object.entries(data).sort((a,b)=>a[1].ts-b[1].ts).forEach(([key,m])=>{if(m&&m.ts)addBubble({...m,fbKey:key},chatId,false);});
   });
   if(typingListener)typingListener();
   typingListener=onValue(ref(db,'typing/'+chatId+'/'+peer.id),snap=>{
-    $('typing-row').textContent=snap.val()?`@${peer.username} está a escrever...`:'';
+    $('typing-row').textContent=snap.val()?`${displayName} está a escrever...`:'';
   });
 }
 
@@ -682,25 +767,47 @@ window.goBackFromChat=function(){
   loadTheme(null);
   if(msgListener){msgListener();msgListener=null;}
   if(typingListener){typingListener();typingListener=null;}
-  currentPeer=null;showScreen('screen-main');
+  if(groupMsgListener){groupMsgListener();groupMsgListener=null;}
+  clearTimeout(typingTimer);typingTimer=null;
+  if(currentPeer){set(ref(db,'typing/'+cid(myUid,currentPeer.id)+'/'+myUid),false).catch(()=>{});}
+  currentPeer=null;currentGroup=null;showScreen('screen-main');
 };
 
-function addBubble(m,chatId){
+function addBubble(m,chatId,isGroup=false){
   const isMe=m.from===myUid;
   const empties=$('messages').querySelectorAll('div[style*="flex:1"]');empties.forEach(e=>e.remove());
   const div=document.createElement('div');div.className='msg '+(isMe?'me':'them');
   let content='';
-  if(m.type==='image') content=`<img src="${m.data}" class="msg-img" onclick="this.style.maxWidth=this.style.maxWidth?'':'100%'"/>`;
-  else if(m.type==='voice') content=`<div class="bubble voice-bubble"><button class="vplay" onclick="new Audio('${m.data}').play()">▶</button><div class="vbar"></div><span class="vdur">${m.dur||'🎤'}</span></div>`;
+  const safeData=(m.data||'').replace(/'/g,"\\'");
+  if(m.type==='image') content=`<img src="${m.data}" class="msg-img" onclick="openAvatarLightbox('${safeData}')"/>`;
+  else if(m.type==='voice'){
+    const vidx=Date.now()+'_'+Math.random().toString(36).slice(2);
+    content=`<div class="bubble voice-bubble"><button class="vplay" id="vb_${vidx}" onclick="playVoice('vb_${vidx}','${safeData}')">▶</button><div class="vbar"><div class="vbar-fill" id="vf_${vidx}"></div></div><span class="vdur">${m.dur||'🎤'}</span></div>`;
+  }
   else{ const _txt=String(m.text||''); if(!_txt||_txt==='undefined')return; content=`<div class="bubble">${_txt}</div>`; }
   const tick=isMe?`<span class="tick">✓✓</span>`:'';
   const rxns=m.reactions?`<div class="reactions-bar">${Object.entries(m.reactions).map(([e,u])=>`<span class="rpill ${u===myUid?'mine':''}">${e}</span>`).join('')}</div>`:'';
   const isText=m.type==='text'||!m.type;
   const actBtns=isText?`<div style="display:flex;gap:4px;margin-top:3px"><button class="ma-btn" onclick="(async function(btn){btn.textContent='⏳';const bubble=btn.closest('.msg').querySelector('.bubble');const t=bubble?.childNodes[0]?.textContent?.trim();if(!t)return;const tr=await translateText(t);btn.textContent='🌐';if(tr&&tr!==t){let el=bubble.querySelector('.tr');if(!el){el=document.createElement('div');el.className='tr';el.style='font-size:12px;color:var(--text2);margin-top:4px;font-style:italic';bubble.appendChild(el);}el.textContent='🌐 '+tr;toast('Traduzido!');}else toast('Sem tradução');})(this)">🌐</button><button class="ma-btn" onclick="startForward('${(m.text||'').replace(/'/g,'&apos;')}')">↪️</button></div>`:'';
-  div.innerHTML=`${content}${rxns}<div class="msg-meta">${gt(m.ts)}${tick}</div>${actBtns}`;
+  const senderName=isGroup&&!isMe&&m.fromName?`<div style="font-size:11px;color:var(--green);font-weight:600;margin-bottom:2px">@${m.fromName}</div>`:'';
+  div.innerHTML=`${senderName}${content}${rxns}<div class="msg-meta">${gt(m.ts)}${tick}</div>${actBtns}`;
   div.querySelector('.bubble')?.addEventListener('dblclick',()=>showRxnPicker(div,m.fbKey,chatId));
   $('messages').appendChild(div);$('messages').scrollTop=99999;
 }
+
+window.playVoice=function(btnId,url){
+  const btn=$(btnId);
+  if(currentAudio&&currentVBtn){
+    currentAudio.pause();currentAudio.currentTime=0;
+    if(currentVBtn.id==='vbar_fill') currentVBtn.style.width='0%';
+    currentVBtn.textContent='▶';
+    if(currentVBtn===btn){currentAudio=null;currentVBtn=null;return;}
+  }
+  currentAudio=new Audio(url);currentVBtn=btn;btn.textContent='⏸';
+  currentAudio.onended=()=>{btn.textContent='▶';currentAudio=null;currentVBtn=null;};
+  currentAudio.onerror=()=>{btn.textContent='▶';currentAudio=null;currentVBtn=null;toast('❌ Erro ao reproduzir áudio');};
+  currentAudio.play().catch(()=>{btn.textContent='▶';currentAudio=null;currentVBtn=null;});
+};
 
 function showRxnPicker(el,fbKey,chatId){
   let ex=el.querySelector('.rxn-picker');if(ex){ex.remove();return;}
@@ -726,9 +833,11 @@ window.sendImage=function(input){
   if(f.size>500000){toast('❌ Imagem muito grande (máx. 500KB)');input.value='';return;}
   const r=new FileReader();
   r.onload=async e=>{
-    if(!currentPeer)return;
-    const chatId=cid(myUid,currentPeer.id);
-    const dr=await push(ref(db,'messages/'+chatId),{from:myUid,type:'image',data:e.target.result,ts:Date.now()});
+    if(!currentPeer&&!currentGroup)return;
+    const chatId=currentGroup?'group_'+currentGroup.id:cid(myUid,currentPeer.id);
+    const msgData={from:myUid,type:'image',data:e.target.result,ts:Date.now()};
+    if(currentGroup)msgData.fromName=myUsername;
+    const dr=await push(ref(db,'messages/'+chatId),msgData);
     await update(dr,{fbKey:dr.key});
   };r.readAsDataURL(f);input.value='';
 };
@@ -754,9 +863,11 @@ window.stopRec=function(e){
     const blob=new Blob(audioChunks,{type:'audio/webm'});
     const r=new FileReader();
     r.onload=async e=>{
-      if(!currentPeer)return;
-      const chatId=cid(myUid,currentPeer.id);
-      const dr=await push(ref(db,'messages/'+chatId),{from:myUid,type:'voice',data:e.target.result,dur:durStr,ts:Date.now()});
+      if(!currentPeer&&!currentGroup)return;
+      const chatId=currentGroup?'group_'+currentGroup.id:cid(myUid,currentPeer.id);
+      const msgData={from:myUid,type:'voice',data:e.target.result,dur:durStr,ts:Date.now()};
+      if(currentGroup)msgData.fromName=myUsername;
+      const dr=await push(ref(db,'messages/'+chatId),msgData);
       await update(dr,{fbKey:dr.key});
     };r.readAsDataURL(blob);
   };
@@ -765,8 +876,15 @@ window.stopRec=function(e){
 };
 
 window.sendMsg=async function(){
-  const text=$('msg-input').value.trim();if(!text||!currentPeer)return;
+  const text=$('msg-input').value.trim();if(!text)return;
   $('msg-input').value='';$('msg-input').style.height='auto';
+  if(currentGroup){
+    const chatId='group_'+currentGroup.id;
+    const dr=await push(ref(db,'messages/'+chatId),{from:myUid,fromName:myUsername,type:'text',text,ts:Date.now()});
+    await update(dr,{fbKey:dr.key});
+    return;
+  }
+  if(!currentPeer)return;
   const chatId=cid(myUid,currentPeer.id);
   const dr=await push(ref(db,'messages/'+chatId),{from:myUid,type:'text',text,ts:Date.now()});
   await update(dr,{fbKey:dr.key});
@@ -774,8 +892,8 @@ window.sendMsg=async function(){
 };
 
 function handleTyping(){
-  if(!currentPeer)return;
-  const chatId=cid(myUid,currentPeer.id);
+  const chatId=currentGroup?'group_'+currentGroup.id:(currentPeer?cid(myUid,currentPeer.id):null);
+  if(!chatId)return;
   set(ref(db,'typing/'+chatId+'/'+myUid),true);
   clearTimeout(typingTimer);
   typingTimer=setTimeout(()=>set(ref(db,'typing/'+chatId+'/'+myUid),false),2000);
@@ -929,7 +1047,23 @@ window.closeStory=function(){$('story-viewer').style.display='none';};
 
 // CALLS (WebRTC)
 let localStream=null,peerConn=null,callTimerInt=null,callSecs=0,callType='audio',incomingData=null,callList=null;
-const ICE={iceServers:[{urls:'stun:stun.l.google.com:19302'},{urls:'stun:stun1.l.google.com:19302'}]};
+const ICE={iceServers:[
+  {urls:'stun:stun.l.google.com:19302'},
+  {urls:'stun:stun1.l.google.com:19302'},
+  {urls:'turn:openrelay.metered.ca:80',username:'openrelayproject',credential:'openrelayproject'},
+  {urls:'turn:openrelay.metered.ca:443',username:'openrelayproject',credential:'openrelayproject'},
+  {urls:'turn:openrelay.metered.ca:443?transport=tcp',username:'openrelayproject',credential:'openrelayproject'}
+]};
+
+function listenCands(remotePath){
+  if(iceCandListener)iceCandListener();
+  iceCandListener=onValue(ref(db,remotePath),snap=>{
+    if(!peerConn||!snap.val())return;
+    Object.values(snap.val()).forEach(entry=>{
+      if(entry.from!==myUid)peerConn.addIceCandidate(new RTCIceCandidate(entry.c)).catch(()=>{});
+    });
+  });
+}
 
 window.startCall=async function(type){
   if(!currentPeer){toast('Seleciona um contacto primeiro');return;}
@@ -943,6 +1077,7 @@ window.startCall=async function(type){
     localStream.getTracks().forEach(t=>peerConn.addTrack(t,localStream));
     peerConn.ontrack=e=>{$('call-video-remote').srcObject=e.streams[0];};
     peerConn.onicecandidate=async e=>{if(e.candidate)await push(ref(db,'calls/'+currentPeer.id+'/cands'),{c:e.candidate.toJSON(),from:myUid});};
+    peerConn.onconnectionstatechange=()=>{if(['disconnected','failed','closed'].includes(peerConn?.connectionState))endCall();};
     const offer=await peerConn.createOffer();
     await peerConn.setLocalDescription(offer);
     await set(ref(db,'calls/'+currentPeer.id+'/offer'),{sdp:offer,from:myUid,name:myUsername,av:myAvatar||'',type,ts:Date.now()});
@@ -950,6 +1085,7 @@ window.startCall=async function(type){
     $('call-status-txt').textContent=type==='video'?'📹 A chamar...':'📞 A chamar...';
     $('call-timer-txt').style.display='none';
     $('call-screen').style.display='flex';
+    listenCands('calls/'+myUid+'/cands');
     onValue(ref(db,'calls/'+myUid+'/answer'),async snap=>{
       const ans=snap.val();if(!ans||!peerConn)return;
       await peerConn.setRemoteDescription(new RTCSessionDescription(ans.sdp));
@@ -962,7 +1098,8 @@ window.startCall=async function(type){
 function listenCalls(){
   if(callList)callList();
   callList=onValue(ref(db,'calls/'+myUid+'/offer'),snap=>{
-    const offer=snap.val();if(!offer)return;
+    const offer=snap.val();
+    if(!offer){$('incoming-call').style.display='none';return;}
     incomingData=offer;
     $('incoming-name').textContent='@'+(offer.name||'');
     $('incoming-type').textContent=offer.type==='video'?'📹 Videochamada':'📞 Chamada de voz';
@@ -981,11 +1118,13 @@ window.acceptCall=async function(){
     localStream.getTracks().forEach(t=>peerConn.addTrack(t,localStream));
     peerConn.ontrack=e=>{$('call-video-remote').srcObject=e.streams[0];};
     peerConn.onicecandidate=async e=>{if(e.candidate)await push(ref(db,'calls/'+incomingData.from+'/cands'),{c:e.candidate.toJSON(),from:myUid});};
+    peerConn.onconnectionstatechange=()=>{if(['disconnected','failed','closed'].includes(peerConn?.connectionState))endCall();};
     await peerConn.setRemoteDescription(new RTCSessionDescription(incomingData.sdp));
     const answer=await peerConn.createAnswer();
     await peerConn.setLocalDescription(answer);
     await set(ref(db,'calls/'+incomingData.from+'/answer'),{sdp:answer,from:myUid});
     await remove(ref(db,'calls/'+myUid+'/offer'));
+    listenCands('calls/'+myUid+'/cands');
     $('call-peer-name').textContent='@'+(incomingData.name||'');
     $('call-status-txt').style.display='none';$('call-timer-txt').style.display='block';
     $('call-screen').style.display='flex';startCallTimer();
@@ -994,16 +1133,164 @@ window.acceptCall=async function(){
 window.rejectCall=async function(){if(incomingData)await remove(ref(db,'calls/'+myUid+'/offer'));$('incoming-call').style.display='none';incomingData=null;toast('Chamada rejeitada');};
 window.endCall=function(){
   if(localStream)localStream.getTracks().forEach(t=>t.stop());
-  if(peerConn)peerConn.close();if(callTimerInt)clearInterval(callTimerInt);
+  if(peerConn){peerConn.onconnectionstatechange=null;peerConn.close();}
+  if(callTimerInt)clearInterval(callTimerInt);
+  if(iceCandListener){iceCandListener();iceCandListener=null;}
   $('call-screen').style.display='none';callSecs=0;localStream=null;peerConn=null;
-  if(myUid)remove(ref(db,'calls/'+myUid));toast('📵 Chamada terminada');
+  if(myUid){remove(ref(db,'calls/'+myUid+'/cands'));remove(ref(db,'calls/'+myUid));}
+  toast('📵 Chamada terminada');
 };
 let muted=false,camOff=false;
 window.toggleMute=function(){muted=!muted;if(localStream)localStream.getAudioTracks().forEach(t=>t.enabled=!muted);$('mute-btn').textContent=muted?'🔇':'🎤';};
 window.toggleCam=function(){camOff=!camOff;if(localStream)localStream.getVideoTracks().forEach(t=>t.enabled=!camOff);$('cam-btn').textContent=camOff?'📷':'📹';};
 function startCallTimer(){callSecs=0;callTimerInt=setInterval(()=>{callSecs++;const m=Math.floor(callSecs/60),s=callSecs%60;$('call-timer-txt').textContent=m+':'+(s<10?'0':'')+s;},1000);}
 
-// Patch enterApp to load stories and listen calls
+// ── LIGHTBOX ──
+window.openAvatarLightbox=function(src){
+  if(!src||src==='undefined')return;
+  $('av-lightbox-img').src=src;
+  $('av-lightbox').style.display='flex';
+};
+window.closeAvatarLightbox=function(){
+  $('av-lightbox').style.display='none';
+  $('av-lightbox-img').src='';
+};
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeAvatarLightbox();});
+
+// ── NICKNAME / RENAME ──
+window.openRenameModal=function(){
+  if(!currentPeer)return;
+  $('rename-contact-input').value=currentPeer.nickname||'';
+  showModal('rename-contact-modal');
+};
+window.saveContactNickname=async function(){
+  if(!currentPeer)return;
+  const nick=$('rename-contact-input').value.trim();
+  await update(ref(db,'contacts/'+myUid+'/'+currentPeer.id),{nickname:nick||null});
+  currentPeer.nickname=nick||null;
+  const displayName=nick||('@'+currentPeer.username);
+  $('chat-peer-name').textContent=displayName;
+  hideModal('rename-contact-modal');
+  toast(nick?'✅ Apelido guardado!':'Apelido removido');
+};
+
+// ── GROUPS ──
+let myGroupsCache={};
+
+function listenGroups(){
+  if(groupsListener)groupsListener();
+  groupsListener=onValue(ref(db,'groups'),snap=>{
+    const all=snap.val()||{};
+    const myG=Object.entries(all).filter(([,g])=>g&&g.members&&g.members[myUid]);
+    myGroupsCache={};
+    myG.forEach(([gid,g])=>{myGroupsCache[gid]={...g,id:gid};});
+    renderGroups(myG);
+  });
+}
+
+function renderGroups(entries){
+  const list=$('groups-list');list.innerHTML='';
+  if(!entries.length){list.innerHTML='<div class="list-empty"><span class="list-empty-icon">👥</span>Sem grupos.<br>Cria o primeiro!</div>';return;}
+  entries.forEach(([gid,g])=>{
+    const item=document.createElement('div');item.className='list-item';
+    const av=document.createElement('div');av.className='group-av';
+    av.style.cssText='width:44px;height:44px;font-size:16px';
+    av.textContent=gi(g.name||'G');item.appendChild(av);
+    const info=document.createElement('div');info.className='item-info';
+    const cnt=Object.keys(g.members||{}).length;
+    info.innerHTML=`<p>${g.name||'Grupo'}</p><span>${cnt} membro${cnt!==1?'s':''}</span>`;
+    item.appendChild(info);item.onclick=()=>openGroupChat({...g,id:gid});
+    list.appendChild(item);
+  });
+}
+
+window.openCreateGroupModal=function(){
+  $('group-name-input').value='';
+  const container=$('create-group-member-list');container.innerHTML='<div style="padding:8px;color:var(--text3);font-size:13px">A carregar contactos...</div>';
+  showModal('create-group-modal');
+  get(ref(db,'contacts/'+myUid)).then(snap=>{
+    container.innerHTML='';
+    const contacts=snap.val()||{};
+    const entries=Object.entries(contacts);
+    if(!entries.length){container.innerHTML='<div style="padding:8px;color:var(--text3);font-size:13px">Sem contactos disponíveis.</div>';return;}
+    entries.forEach(([uid,c])=>{
+      const row=document.createElement('div');row.className='member-check-row';
+      const displayName=c.nickname||('@'+c.username);
+      row.innerHTML=`<input type="checkbox" id="gm-${uid}" value="${uid}" style="width:16px;height:16px;accent-color:var(--green)"/><label for="gm-${uid}" style="cursor:pointer;font-size:14px;color:var(--text)">${displayName}</label>`;
+      container.appendChild(row);
+    });
+  });
+};
+
+window.createGroup=async function(){
+  const name=$('group-name-input').value.trim();
+  if(name.length<2){toast('❌ Nome muito curto');return;}
+  const checked=[...$('create-group-member-list').querySelectorAll('input:checked')];
+  if(!checked.length){toast('❌ Seleciona pelo menos 1 contacto');return;}
+  const members={[myUid]:true};
+  checked.forEach(cb=>members[cb.value]=true);
+  const dr=await push(ref(db,'groups'),{name,createdBy:myUid,createdAt:Date.now(),members});
+  hideModal('create-group-modal');
+  toast('✅ Grupo "'+name+'" criado!');
+};
+
+function openGroupChat(group){
+  if(msgListener){msgListener();msgListener=null;}
+  if(typingListener){typingListener();typingListener=null;}
+  if(groupMsgListener){groupMsgListener();groupMsgListener=null;}
+  clearTimeout(typingTimer);typingTimer=null;
+  currentPeer=null;currentGroup=group;
+  const chatId='group_'+group.id;
+  $('chat-peer-name').textContent=group.name||'Grupo';
+  const cnt=Object.keys(group.members||{}).length;
+  $('chat-peer-sub').textContent=cnt+' membro'+(cnt!==1?'s':'');
+  const w=$('chat-peer-av-wrap');w.innerHTML='';
+  const av=document.createElement('div');av.className='group-av';
+  av.style.cssText='width:36px;height:36px;font-size:13px;cursor:pointer';
+  av.textContent=gi(group.name||'G');av.onclick=()=>showGroupInfo();w.appendChild(av);
+  $('rename-contact-btn').style.display='none';
+  $('group-info-btn').style.display='';
+  $('call-audio-btn').style.display='none';
+  $('call-video-btn').style.display='none';
+  $('messages').innerHTML='';showScreen('screen-chat');
+  groupMsgListener=onValue(ref(db,'messages/'+chatId),snap=>{
+    const data=snap.val();$('messages').innerHTML='';
+    if(!data){$('messages').innerHTML='<div style="flex:1;display:flex;align-items:center;justify-content:center;font-size:13px;color:var(--text3)">Envia a primeira mensagem!</div>';return;}
+    Object.entries(data).sort((a,b)=>a[1].ts-b[1].ts).forEach(([key,m])=>{if(m&&m.ts)addBubble({...m,fbKey:key},chatId,true);});
+  });
+  typingListener=onValue(ref(db,'typing/'+chatId),snap=>{
+    const typingUsers=snap.val()||{};
+    const others=Object.keys(typingUsers).filter(uid=>typingUsers[uid]&&uid!==myUid);
+    $('typing-row').textContent=others.length?'Alguém está a escrever...':'';
+  });
+}
+
+window.showGroupInfo=function(){
+  if(!currentGroup)return;
+  $('group-info-name').textContent=currentGroup.name||'Grupo';
+  const cnt=Object.keys(currentGroup.members||{}).length;
+  $('group-info-count').textContent=cnt+' membro'+(cnt!==1?'s':'');
+  const panel=$('group-member-list-panel');panel.innerHTML='';
+  Object.keys(currentGroup.members||{}).forEach(async uid=>{
+    try{
+      const snap=await get(ref(db,'users/'+uid));
+      if(!snap.exists())return;
+      const u=snap.val();
+      const row=document.createElement('div');row.className='list-item';
+      row.appendChild(renderAv(u.avatar,u.username,36,false));
+      const info=document.createElement('div');info.className='item-info';
+      const isAdmin=uid===currentGroup.createdBy;
+      info.innerHTML=`<p>@${u.username}${uid===myUid?' (eu)':''}</p><span>${isAdmin?'👑 Admin':'Membro'}</span>`;
+      row.appendChild(info);panel.appendChild(row);
+    }catch(e){}
+  });
+  $('group-info-overlay').style.display='flex';
+};
+window.closeGroupInfo=function(){$('group-info-overlay').style.display='none';};
+
+// Reset chat header buttons when opening 1-to-1 chat
+const _origOpenChat=openChat;
+// openChat already handles showing/hiding buttons correctly via openGroupChat/openChat
 
 // ── THEME ──
 window.setTheme = function(mode) {
